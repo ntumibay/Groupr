@@ -2,10 +2,10 @@
 Github repo for CS 546-WS1 Final Project.
 
 # Group Members
-Samara Vassel
-Noah Tumibay
-Sean Bautista
-Vincent Penalosa
+Samara Vassel, 
+Noah Tumibay, 
+Sean Bautista, 
+Vincent Penalosa, 
 
 # Introduction
 The web application will serve as a scheduler for groups. Users will be able to put their schedules onto the site, for the rest of the group to see. Group members can also decide who will be able to assign tasks to individuals. When a task is completed, the user can mark it, and the next time a user logs on, they will see that certain assignments have been finished, regardless of whether or not it was assigned to them.
