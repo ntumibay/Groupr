@@ -1,0 +1,25 @@
+{
+  "name": "Groupr",
+  "version": "1.0.0",
+  "description": "CS546 Final Project",
+  "main": "app.js",
+  "type": "module",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "blueimp-md5": "^2.19.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.1",
+    "express-session": "^1.18.1",
+    "md5": "^2.3.0",
+    "mongodb": "^6.16.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sean Bautista 20024647",
+  "license": "ISC"
+}

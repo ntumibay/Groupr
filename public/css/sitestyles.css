@@ -1,0 +1,61 @@
+/* Styling
+You will create a CSS stylesheet in /public/css/sitestyles.css; this file should have at least 5 rulesets.  You will need to utilize all 5 rulesets on each of the pages (not every page has to use all 5 rulesets each but all 5 rulesets must be utilized by the various pages in your application).  So you can have some rulesets for one page, some for another page but there needs to be at least 5 total rulesets that are used between all the pages.   Depending of the user's theme preferences stored in the session, your pages will be displayed using the user's theme preferences. The background of the page should be the background color preference they selected when they signed up, and the font color will be the font color they selected when they signed up. ALL pages must have the theme applied when a user is logged in. 
+*/
+
+html {
+    font-size: 18pt;
+}
+
+/* Base styles with theme variables */
+body {
+    font-family: fantasy, chalkduster;
+    background-color: var(--user-bg-color, #99CCFF); /* Fallback to original */
+    color: var(--user-text-color, #000000); /* Fallback to black */
+    transition: background-color 0.3s, color 0.3s; /* Smooth theme switching */
+}
+
+/* Theme-aware elements */
+main {
+    padding-top: 2em;
+}
+
+h1 {
+    display: block;
+    text-align: right;
+    color: inherit; /* Inherits from body */
+}
+
+button {
+    background: var(--user-accent-color, purple);
+    border: 5px solid var(--user-accent-secondary, salmon);
+    color: white;
+}
+
+button:hover {
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+form > label {
+    font-weight: bold; /* Changed from italic which isn't valid for weight */
+    font-style: italic;
+}
+
+input[type=text] {
+    padding: 10%;
+    background-color: var(--user-input-bg, white);
+}
+
+h2 {
+    font-size: 40px;
+    color: inherit; /* Inherits from body */
+}
+
+a:visited {
+    color: var(--user-link-visited, rgb(72, 140, 8));
+}
+
+a:hover {
+    color: var(--user-link-hover, #606f7e);
+}
+

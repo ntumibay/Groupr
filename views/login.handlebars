@@ -1,0 +1,22 @@
+{{!--
+
+login form handlebar template
+ERROR CHECK IF NOT DONE IN /ROUTES
+--}}
+<main>
+    <header>
+        <h1>Login</h1>
+    </header>
+
+    <form method="POST" action="/login" id="signin-form">
+        <label for="userId">User ID:</label>
+        <input name="userId" id="userId" type="text">
+        <label for="password">Password:</label>
+        <input name="password" id="password" type="password">
+        {{#if errors}}
+            <p class="error">{{errorMessage}}</p>
+        {{/if}}
+        <button name="submit_button" id="submit_button" type="submit">Login</button>
+    </form>
+    <a href="/register">Click here to sign up!</a>
+</main>

@@ -1,0 +1,18 @@
+{{!--
+
+You can use this if they try to access a route that they should not be able to. You will redirect them here. For
+example, if they go to /user without being logged in, or they try to access /superuser without beinging logged in or
+they are not a super user. You don't HAVE to use this template, you can display errors and respond with status codes on
+the pages with the forms themselves. You can use this if you wish though. 
+
+--}}
+
+<main>
+    <header>
+        <h1>Access Denied</h1>
+    </header>
+    <a href="/login">Back to login page</a> {{!change to ./login.handlebars if issues arise}}
+    <p class="errors">
+        {{errors}}
+    </p>
+</main>
