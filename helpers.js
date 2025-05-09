@@ -5,12 +5,21 @@ export const nameRegex = /^[a-zA-Z]{2,20}$/;
 export const idRegex = /^[a-zA-Z0-9]{5,10}$/;
 export const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
 export const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+export const pinRegex = /^[0-9]{6}$/;
 
 // Helper functions
 export const validateStringInput = (input, fieldName) => {
   if (!input) throw `Error: ${fieldName} must be provided`;
   if (typeof input !== 'string' || input.trim().length===0) throw `Error: ${fieldName} must be a non-empty string`;
   return input.trim();
+};
+
+export const validatePIN = (pin) => {
+  if (!pin) throw "Error: PIN must be provided";
+  if (!Number.isInteger(pin)) throw "Error: PIN must be an int";
+  let pStr = pin.toString();
+  if (!pinRegex.test(pStr)) throw "Error: PIN must be a positive, 6-digit integer";
+  return pin;
 };
 
 export const validateName = (name, fieldName) => {

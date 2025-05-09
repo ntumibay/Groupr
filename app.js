@@ -57,10 +57,11 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import exphbs from 'express-handlebars';
+import exphbs, { create } from 'express-handlebars';
 import configRoutes from './routes/index.js';
 
 import { register, login, addEvents, addTasks } from "./data/users.js";
+import { createGroup, assignAdmin, addMember, groupAddEvents, groupAddTasks, searchGroupById } from './data/group.js';
 import {dbConnection, closeConnection } from './config/mongoConnection.js';
 
 const app = express();
@@ -180,32 +181,34 @@ app.use('/user/:userid', (req, res, next) => {
 
 configRoutes(app);
 
-app.listen(3000, () => {
-    console.log("We've now got a server!");
-    console.log('Your routes will be running on http://localhost:3000');
-});
+// app.listen(3000, () => {
+//     console.log("We've now got a server!");
+//     console.log('Your routes will be running on http://localhost:3000');
+// });
 
 
 //below checks functions work b4 creating routes
 async function populate_database() {
   const db = await dbConnection();
-  //await db.dropDatabase();
-  // console.log(await register('Patrick',
-  //      'Hill',  
-  //      'graffixnyc',
-  //      '@PainTurfs7',
-  //     'administrator'));
-  // try {
-  //      console.log(await login("Samara", "@PainTurfs7"));
-  // } catch (err) {
-  //      console.log(err.toString());
-  // }
-  // console.log();
-  // try {
-  //      console.log(await login("GRAFFIXnyc", "@PainTurfs7"));
-  // } catch (err) {
-  //      console.log(err.toString());
-  // }
+  await db.dropDatabase();
+  console.log(await register('Patrick',
+       'Hill',  
+       'graffixnyc',
+       '@PainTurfs7',
+      'administrator'));
+
+  console.log(await register("Sean", "Bautista", "teriya", "Projectko2!", "administrator"));
+  try {
+       console.log(await login("Samara", "@PainTurfs7"));
+  } catch (err) {
+       console.log(err.toString());
+  }
+  console.log();
+  try {
+       console.log(await login("GRAFFIXnyc", "@PainTurfs7"));
+  } catch (err) {
+       console.log(err.toString());
+  }
   //see if addEvents works
   try {
     console.log(await addEvents("graffixnyc", {
@@ -219,8 +222,91 @@ async function populate_database() {
   catch (err) {
        console.log(err.toString());
   }
+
+  try {
+    console.log(await addTasks("teriya", {
+      assignedUsers: ["teriya"], 
+      progress: "not started", 
+      startDate: "2025-10-01", 
+      endDate: "2025-12-01",
+      urgencyLevel: 5,
+      description: "CS546 Final Project"
+    }));
+  }
+  catch (e){
+    console.error(e);
+  }
+
+  try {
+    console.log(await createGroup("Group R", "graffixnyc", 123456));
+  }
+  catch (e){
+    console.error(e);
+  }
+
+  try {
+    console.log(await createGroup("Not Group R", "graffixnyc", 123456));
+  }
+  catch (e){
+    console.log(e);
+  }
+  try {
+    console.log(await assignAdmin("graffixnyc", 123456));
+  }
+  catch (e){
+    console.error(e);
+  }
+
+  try {
+    console.log(await addMember("teriya", 123456));
+  }
+  catch (e){
+    console.error(e);
+  }
+
+  try {
+    console.log(await assignAdmin("teriya", 123456));
+  }
+  catch (e){
+    console.error(e);
+  }
+
+  try {
+    console.log(await groupAddEvents(123456, {
+      title: "CS442 Lecture",
+      startDate: "2025-10-01",
+      endDate: "2025-12-01",
+      description: "CS442 Lecture with Professor Sam Kim the GOAT"
+    }
+  ));
+  }
+  catch (err) {
+       console.log(err.toString());
+  }
+
+  try {
+    console.log(await groupAddTasks(123456, {
+      assignedUsers: ["teriya"], 
+      progress: "not started", 
+      startDate: "2025-10-01", 
+      endDate: "2025-12-01",
+      urgencyLevel: 5,
+      description: "CS546 Final Project"
+    }));
+  }
+  catch (e){
+    console.error(e);
+  }
+
+  try {
+    console.log(await searchGroupById(123456));
+  }
+  catch (e){
+    console.error(e);
+  }
+  
   await closeConnection();
   console.log('Done!');
 }
 
-//await populate_database();
+await populate_database();
