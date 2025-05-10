@@ -116,12 +116,12 @@ router
             return res.status(400).render('login', {errors: true, errorMessage: "User ID must be a valid string"});
         }
 
-        if (userId.length < 5 || userId.length > 10) {
-            return res.status(400).render('login',{ errors: true, errorMessage: "userId must be between 5 and 10 characters" });
+        if (!/^[a-zA-Z0-9]+$/.test(userId.trim())) {
+            return res.status(400).render('login',{ errors: true, errorMessage: "userId can only contain letters and numbers" });
         }
 
-        if (!/^[a-zA-Z0-9]+$/.test(userId)) {
-            return res.status(400).render('login',{ errors: true, errorMessage: "userId can only contain letters and numbers" });
+        if (userId.trim().length < 5 || userId.trim().length > 10) {
+            return res.status(400).render('login',{ errors: true, errorMessage: "userId must be between 5 and 10 characters" });
         }
 
         if (typeof password !== 'string' || password.trim().length === 0) {
@@ -133,7 +133,7 @@ router
         }
 
         if (!/(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])/.test(password)) {
-            return res.status(400).render('login',{ errors: true, errorMessage: "password must contain at least one uppercase letter, one number, and one special character" });
+            return res.status(400).render('login',{ errors: true, errorMessage: "Password must contain at least one uppercase letter, one number, and one special character" });
         }
 
         //login user

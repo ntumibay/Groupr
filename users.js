@@ -59,8 +59,7 @@ export const login = async (userId, password) => {
   if (!userId || !password){
     throw "Error: userId and password must be provided";
   }
-  userId = helpers.validateUserId(userId);
-  password = helpers.validatePassword(password);
+  userId = userId.trim();
   
 
   const userCollection = await users();
@@ -136,6 +135,15 @@ export const addEvents = async (userId, event) => {
   if (!event.description || typeof event.description !== 'string'){
     throw "Error: description must be a string";
   }
+
+  if (!event.startTime || typeof event.startTime !=='string'){
+    throw "Error: startTime must be a string";
+  }
+
+  if (!event.endTime || typeof event.endTime !=='string'){
+    throw "Error: endTime must be a string";
+  }
+
   //check that startDate is before endDate
   const startDate = new Date(event.startDate);
   const endDate = new Date(event.endDate);
@@ -146,6 +154,24 @@ export const addEvents = async (userId, event) => {
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
     throw "Error: startDate and endDate must be valid dates";
   }
+
+  const parseTime = (timeStr) => {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  if (isNaN(hours)) throw `Error: Invalid time format (use HH:MM)`;
+    return { hours, minutes };
+  };
+
+  const startTime = parseTime(event.startTime);
+  const endTime = parseTime(event.endTime);
+
+  // Validate time logic for same-day events
+  if (startDate.toDateString == endDate.toDateString) {
+    if (startTime.hours > endTime.hours || 
+        (startTime.hours === endTime.hours && startTime.minutes >= endTime.minutes)) {
+      throw "Error: For same-day events, startTime must be before endTime";
+    }
+  }
+
   //check that description is not empty
   if (event.description.trim() === ''){
     throw "Error: description cannot be empty";
@@ -232,6 +258,23 @@ export const addTasks = async (userId, task) => {
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
     throw "Error: startDate and endDate must be valid dates";
   }
+
+  const parseTime = (timeStr) => {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  if (isNaN(hours)) throw `Error: Invalid time format (use HH:MM)`;
+    return { hours, minutes };
+  };
+  const startTime = parseTime(task.startTime);
+  const endTime = parseTime(task.endTime);
+
+  // Validate time logic for same-day tasks
+  if (startDate.toDateString == endDate.toDateString) {
+    if (startTime.hours > endTime.hours || 
+        (startTime.hours === endTime.hours && startTime.minutes >= endTime.minutes)) {
+      throw "Error: For same-day tasks, startTime must be before endTime";
+    }
+  }
+
   //check that assignedUSers is an array of strings
   if (!task.assignedUsers || !Array.isArray(task.assignedUsers)){
     throw "Error: assignedUsers must be an array of strings";

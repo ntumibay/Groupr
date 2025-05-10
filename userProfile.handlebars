@@ -90,6 +90,9 @@ and their tasks/events alr set up
                 <option value="5">5 (High)</option>
             </select>
             <button name="submitButton" id="submitButton" type="submit" value="task">Add Task</button>
+            {{#if errors}}
+            <p class="error">{{errorMessage}}</p>
+        {{/if}}
         </form>
         <a id="signoutLink" href="/signout">Sign out</a>
     </div>
