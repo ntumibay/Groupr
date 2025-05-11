@@ -59,6 +59,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import exphbs, { create } from 'express-handlebars';
 import configRoutes from './routes/index.js';
+import * as helpers from "./helpers.js";
 
 import { register, login, addEvents, addTasks } from "./data/users.js";
 import { createGroup, assignAdmin, addMember, groupAddEvents, groupAddTasks, searchGroupById } from './data/group.js';
@@ -213,8 +214,8 @@ async function populate_database() {
   try {
     console.log(await addEvents("graffixnyc", {
       title: "CS442 Lecture",
-      startDate: "2025-10-01",
-      endDate: "2025-12-01",
+      startDate: "Wed:10:30",
+      endDate: "Wed:12:30",
       description: "CS442 Lecture with Professor Sam Kim the GOAT"
     }
   ));
@@ -227,8 +228,8 @@ async function populate_database() {
     console.log(await addTasks("teriya", {
       assignedUsers: ["teriya"], 
       progress: "not started", 
-      startDate: "2025-10-01", 
-      endDate: "2025-12-01",
+      startDate: "Thu:10:30", 
+      endDate: "The:12:30",
       urgencyLevel: 5,
       description: "CS546 Final Project"
     }));
@@ -274,8 +275,8 @@ async function populate_database() {
   try {
     console.log(await groupAddEvents(123456, {
       title: "CS442 Lecture",
-      startDate: "2025-10-01",
-      endDate: "2025-12-01",
+      startDate: "Wed:10:30",
+      endDate: "Wed:12:30",
       description: "CS442 Lecture with Professor Sam Kim the GOAT"
     }
   ));
@@ -309,4 +310,109 @@ async function populate_database() {
   console.log('Done!');
 }
 
-await populate_database();
+
+async function main() {
+  // await populate_database();
+
+  // try {
+  //   console.log(await register('Vincent',
+  //      'Penalosa',  
+  //      'warachnid',
+  //      '1Password!',
+  //     'member'));
+  // } catch (e) {
+  //   console.log(e);
+  // }
+
+  // try {
+  //   console.log(await register('Dominic',
+  //      'Penalosa',  
+  //      'derpysquid',
+  //      '2Password!',
+  //     'member'));
+  // } catch (e) {
+  //   console.log(e);
+  // }
+
+  // const events1 = [
+  //   {
+  //     title: "Team Meeting",
+  //     startDate: "Thu:12:30",
+  //     endDate: "Thu:14:00",
+  //     description: "Weekly team sync-up"
+  //   },
+  //   {
+  //     title: "Office Hours",
+  //     startDate: "Mon:10:00",
+  //     endDate: "Mon:11:00",
+  //     description: "Student office hours with TA"
+  //   },
+  //   {
+  //     title: "Study Group",
+  //     startDate: "Wed:09:15",
+  //     endDate: "Wed:10:00",
+  //     description: "Morning study group session"
+  //   },
+  //   {
+  //     title: "Lab Session",
+  //     startDate: "Tue:18:00",
+  //     endDate: "Tue:19:00",
+  //     description: "CS546 Lab on backend development"
+  //   },
+  //   {
+  //     title: "Late Night Coding",
+  //     startDate: "Sat:00:30",
+  //     endDate: "Sat:02:00",
+  //     description: "Group hackathon preparation"
+  //   },
+  //   {
+  //     title: "Game Dev Sprint",
+  //     startDate: "Fri:22:00",
+  //     endDate: "Sat:01:00",
+  //     description: "Late night game development sprint"
+  //   }
+  // ];
+
+  // let events2 = [
+  //   {
+  //     title: "Lecture Review",
+  //     startDate: "Mon:09:00",
+  //     endDate: "Mon:10:30",
+  //     description: "Review session for CS coursework"
+  //   },
+  //   {
+  //     title: "Overnight Server Maintenance",
+  //     startDate: "Sun:23:30",
+  //     endDate: "Mon:01:00",
+  //     description: "Scheduled server maintenance"
+  //   },
+  //   {
+  //     title: "Morning Gym",
+  //     startDate: "Wed:08:00",
+  //     endDate: "Wed:09:30",
+  //     description: "Workout before class"
+  //   },
+  //   {
+  //     title: "Lunch Meetup",
+  //     startDate: "Thu:12:00",
+  //     endDate: "Thu:13:00",
+  //     description: "Quick lunch with classmates"
+  //   }
+  // ];
+
+
+  // for(let event of events1) {
+  //   await addEvents("warachnid", event);
+  // }
+
+  // for(let event of events2) {
+  //   await addEvents("derpysquid", event);
+  // }
+
+  // await addMember("warachnid", 123456);
+  await addMember("derpysquid", 123456);
+  const group = await searchGroupById(123456);
+  console.log(group.schedule);
+}
+
+main();
