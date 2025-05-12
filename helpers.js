@@ -116,6 +116,11 @@ export const formatLastLogin = () => {
 
 //takes in a bunch of events
 export const createFreeIntervals = (events) => {
+  //if no events are passed return nothing
+  if(events.length === 0) {
+    return [];
+  }
+
   //converts datetimes in events from dow:hh:mm -> minutes in week
   let datetimes = [];
   for(let event of events) {
@@ -149,6 +154,11 @@ export const createFreeIntervals = (events) => {
 
 //takes in a bunch of events and returns the intervals where everyone is busy
 export const createBusyIntervals = (events) => {
+  //if no events are passed return nothing
+  if(events.length === 0) {
+    return [];
+  }
+
   //converts datetimes in events from dow:hh:mm -> minutes in week
   let datetimes = [];
   for(let event of events) {
