@@ -1,0 +1,77 @@
+<main>
+    <div id="group"> 
+        <h1>This is the page for {{group.name}}!</h1>
+        {{#if isAdmin}}
+        <h2>PIN: {{group.PIN}}</h2>
+        {{/if}}
+        <h2>Members:</h2>
+        {{#each group.members}}
+            <li>{{this.name}}</li>
+        {{/each}}
+    <h2>Group Events</h2>
+            {{#each group.events}}
+                <h3>{{this.title}}</h3>
+                <ul>
+                    <li>Start Date: {{this.startDate}}</li>
+                    <li>End Date: {{this.endDate}}</li>
+                </ul>
+                <p>Description: {{this.description}}</p>
+            {{/each}}
+
+        <h2>Tasks</h2>
+            {{#each group.tasks}}
+                <h3>Task {{inc @index}}</h3>
+                <ul>
+                    <li>Progress: {{this.progress}}</li>
+                    <li>Start Date: {{this.startDate}}</li>
+                    <li>End Date: {{this.endDate}}</li>
+                    <li>Urgency Level: {{this.urgencyLevel}}</li>
+                </ul>
+                <p>Description: {{this.description}}</p>
+            {{/each}}
+    </div>
+    {{#if isAdmin}}
+    <div id="eventTaskForms">
+        {{#if errors}}
+            <p class="error">{{errorMessage}}</p>
+        {{/if}}
+        <form method="POST" action="/group/{{group.PIN}}" id="eventForm">
+            <h2>Add Event</h2>
+            <label for="eventTitle">Event Title:</label>
+            <input name="eventTitle" id="eventTitle" type="text" required>
+            <label for="startDate">Start Date:</label>
+            <input name="startDate" id="startDate" type="date" required>
+            <label for="endDate">End Date:</label>
+            <input name="endDate" id="endDate" type="date" required>
+            <label for="eventDescription">Event Description:</label>
+            <textarea name="eventDescription" id="eventDescription"></textarea>
+            <button name="submitButton" id="submitButton" type="submit" value="event">Add Event</button>
+        </form>
+        <form method="POST" action="/group/{{group.PIN}}" id="taskForm">
+            <h2>Add Task</h2>
+            <label for="taskDescription">Task Description:</label>
+            <textarea name="taskDescription" id="taskDescription"></textarea>
+            <label for="progress">Progress:</label>
+            <select name="progress" id="progress" type="text" required>
+                <option value="not started">Not Started</option>
+                <option value="in progress">In Progress</option>
+                <option value="finished">Finished</option>
+            </select>
+            <label for="startDate">Start Date:</label>
+            <input name="startDate" id="startDate" type="date" required>
+            <label for="endDate">End Date:</label>
+            <input name="endDate" id="endDate" type="date" required>
+            <label for="urgencyLevel">Urgency Level:</label>
+            <select name="urgencyLevel" id="urgencyLevel">
+                <option value="1">1 (Low)</option>
+                <option value="2">2 </option>
+                <option value="3">3 (Medium) </option>
+                <option value="4">4 </option>
+                <option value="5">5 (High)</option>
+            </select>
+            <button name="submitButton" id="submitButton" type="submit" value="task">Add Task</button>
+        </form>
+
+    </div>
+    {{/if}}
+</main>
