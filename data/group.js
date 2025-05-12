@@ -84,29 +84,57 @@ export const assignAdmin = async (userId, groupPIN) => {
 export const addMember = async (userId, groupPIN) => {
     userId = helpers.validateUserId(userId);
     groupPIN = helpers.validatePIN(groupPIN);
+    
     const groupCollection = await groups();
     const userCollection = await users();
-    let groupExists = await groupCollection.findOne({PIN: groupPIN});
-    if (!groupExists){
+    
+    // Check if group exists
+    const groupExists = await groupCollection.findOne({ PIN: groupPIN });
+    if (!groupExists) {
         throw "Error: There is no group with this group PIN";
     }
-    let userExists = await userCollection.findOne({userId: userId});
-    if (!userExists){
+    
+    // Check if user exists
+    const userExists = await userCollection.findOne({ userId: userId });
+    if (!userExists) {
         throw "Error: There is no user with this ID";
     }
-    if (!groupExists.members.includes(userId)){
-      const groupEvents = Array.isArray(groupExists.schedule.events) ? groupExists.schedule.events : [];
-        const userEvents = Array.isArray(userExists.schedules.events) ? userExists.schedules.events : [];
-        const combinedEvents = [...groupEvents, ...userEvents];
-        await groupCollection.updateOne(
-          { PIN: groupPIN },
-          { $push: { members: userId,
-                      "schedule.events": { $each: userExists.schedules.events }
-                    },
-            $set: { "schedule.groupFreeTime": helpers.createFreeIntervals(combinedEvents)}
-          }
-        );
+    
+    // Check if user is already in group
+    if (groupExists.members.includes(userId)) {
+        throw "Error: User is already a member of this group";
     }
+    
+    // Combine events
+    let groupEvents = Array.isArray(groupExists.schedule.events) ? groupExists.schedule.events : [];
+    let userEvents = Array.isArray(userExists.schedules.events) ? userExists.schedules.events : [];
+    
+    // Get events from other members
+    for (const memberId of groupExists.members) {
+        if (memberId !== userId) {  // Skip the new member
+            const member = await getUserById(memberId);
+            userEvents = userEvents.concat(member.schedules.events || []);
+        }
+    }
+    
+    const combinedEvents = [...groupEvents, ...userEvents];
+    
+    // Update group
+    const updateResult = await groupCollection.updateOne(
+        { PIN: groupPIN },
+        { 
+            $push: { members: userId },
+            $set: { 
+                "schedule.groupFreeTime": helpers.createFreeIntervals(combinedEvents) 
+            } 
+        }
+    );
+    
+    if (updateResult.modifiedCount === 0) {
+        throw "Error: Failed to add member to group";
+    }
+    
+    return { success: true };
 }
 
 // export const assignTask = async () {}
@@ -162,7 +190,7 @@ export const groupAddEvents = async (groupPIN, event) => {
   //check that startDate is before endDate
   const startDate = event.startDate;
   const endDate = event.endDate;
-  if (helpers.daysToMinutes(startDate) > helpers.daysToMinutes(endDate)){
+  if (startDate > endDate){
     throw "Error: startDate must be before endDate";
   }
 
