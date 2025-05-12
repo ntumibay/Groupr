@@ -113,3 +113,62 @@ export const formatLastLogin = () => {
          `${twelveHour.toString().padStart(2, '0')}:` +
          `${td.getMinutes().toString().padStart(2, '0')}${ampm}`;
 };
+
+//takes in a bunch of events
+export const createFreeIntervals = (events) => {
+  //converts datetimes in events from dow:hh:mm -> minutes in week
+  let datetimes = [];
+  for(let event of events) {
+    datetimes.push({startDate: event.startDate, endDate: event.endDate});
+  }
+  datetimes.sort((a, b) => a.startDate - b.startDate);
+
+  //gets all the busy blocks
+  let busyIntervals = [];
+  let lastMerged = datetimes[0];
+  for(let i = 1; i < datetimes.length; i++) {
+    let current = datetimes[i];
+    if(lastMerged.endDate >= current.startDate) {
+      lastMerged = {startDate: lastMerged.startDate, endDate: (lastMerged.endDate > current.endDate) ? lastMerged.endDate : current.endDate};
+    } else {
+      busyIntervals.push(lastMerged);
+      lastMerged = current;
+    }
+  }
+  busyIntervals.push(lastMerged);
+
+  //returns all the free blocks
+  let freeIntervals = [];
+  for(let i = 0; i < busyIntervals.length-1; i++) {
+    freeIntervals.push({startDate: busyIntervals[i].endDate, endDate: busyIntervals[i+1].startDate});
+  }
+  freeIntervals.push({startDate: busyIntervals[busyIntervals.length-1].endDate, endDate: busyIntervals[0].startDate});
+
+  return freeIntervals;
+}
+
+//takes in a bunch of events and returns the intervals where everyone is busy
+export const createBusyIntervals = (events) => {
+  //converts datetimes in events from dow:hh:mm -> minutes in week
+  let datetimes = [];
+  for(let event of events) {
+    datetimes.push({startDate: event.startDate, endDate: event.endDate});
+  }
+  datetimes.sort((a, b) => a.startDate - b.startDate);
+
+  //gets all the busy blocks
+  let busyIntervals = [];
+  let lastMerged = datetimes[0];
+  for(let i = 1; i < datetimes.length; i++) {
+    let current = datetimes[i];
+    if(lastMerged.endDate >= current.startDate) {
+      lastMerged = {startDate: lastMerged.startDate, endDate: (lastMerged.endDate > current.endDate) ? lastMerged.endDate : current.endDate};
+    } else {
+      busyIntervals.push(lastMerged);
+      lastMerged = current;
+    }
+  }
+  busyIntervals.push(lastMerged);
+
+  return busyIntervals;
+}

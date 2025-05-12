@@ -45,7 +45,7 @@ export const register = async (
       _id: new ObjectId(),
       events: [],
       tasks: [],
-      groupFreeTime: [],
+      //groupFreeTime: [], commenting this out since we said it would be hidden in user collection
       userFreeTime: []
     },
     stats: []
@@ -61,6 +61,7 @@ export const login = async (userId, password) => {
   }
   userId = helpers.validateUserId(userId);
   password = helpers.validatePassword(password);
+  userId = userId.trim();
   
 
   const userCollection = await users();
@@ -136,7 +137,7 @@ export const addEvents = async (userId, event) => {
   if (!event.description || typeof event.description !== 'string'){
     throw "Error: description must be a string";
   }
-  //check that startDate is before endDate
+  
   const startDate = new Date(event.startDate);
   const endDate = new Date(event.endDate);
   if (startDate > endDate){
@@ -146,6 +147,7 @@ export const addEvents = async (userId, event) => {
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
     throw "Error: startDate and endDate must be valid dates";
   }
+
   //check that description is not empty
   if (event.description.trim() === ''){
     throw "Error: description cannot be empty";
@@ -157,7 +159,6 @@ export const addEvents = async (userId, event) => {
 
   //getting here implies event is valid. now add to user's schedule subdocument
 
-
   const userCollection = await users();
   const user = await userCollection.findOne({userId: userId.trim()});
   if (!user){
@@ -168,8 +169,8 @@ export const addEvents = async (userId, event) => {
   const newEvent = {
     _id: new ObjectId(),
     title: event.title,
-    startDate: event.startDate,
-    endDate: event.endDate,
+    startDate: startDate,
+    endDate: endDate,
     description: event.description
   };
   await userCollection.updateOne(
@@ -193,7 +194,7 @@ export const addTasks = async (userId, task) => {
   if (typeof task != 'object') {throw "Error: task must be an object";}
   //make sure the only keys are title, startDate, endDate, description
   const eventKeys = Object.keys(task);
-  const validKeys = ['progress', 'assignedUsers', 'startDate', 'endDate', 'urgencyLevel', 'description'];
+  const validKeys = ['progress', 'assignedUsers', 'startDate', 'endDate', 'startTime', 'endTime', 'urgencyLevel', 'description'];
   for (let i = 0; i < eventKeys.length; i++){
     if (!validKeys.includes(eventKeys[i])){
       throw "Error: event can only contain title, startDate, endDate, and description";
@@ -230,6 +231,23 @@ export const addTasks = async (userId, task) => {
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
     throw "Error: startDate and endDate must be valid dates";
   }
+
+  const parseTime = (timeStr) => {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  if (isNaN(hours)) throw `Error: Invalid time format (use HH:MM)`;
+    return { hours, minutes };
+  };
+  const startTime = parseTime(task.startTime);
+  const endTime = parseTime(task.endTime);
+
+  // Validate time logic for same-day tasks
+  if (startDate.toDateString == endDate.toDateString) {
+    if (startTime.hours > endTime.hours || 
+        (startTime.hours === endTime.hours && startTime.minutes >= endTime.minutes)) {
+      throw "Error: For same-day tasks, startTime must be before endTime";
+    }
+  }
+
   //check that assignedUSers is an array of strings
   if (!task.assignedUsers || !Array.isArray(task.assignedUsers)){
     throw "Error: assignedUsers must be an array of strings";
@@ -282,6 +300,8 @@ export const addTasks = async (userId, task) => {
     progress: task.progress,
     startDate: task.startDate,
     endDate: task.endDate,
+    startTime: task.startTime,
+    endTime: task.endTime,
     urgencyLevel: task.urgencyLevel,
     description: task.description
   };
