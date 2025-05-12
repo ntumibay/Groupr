@@ -3,6 +3,7 @@ import e, { Router } from "express";
 const router = Router();
 //import {register, login, addEvents, addTasks, getUserById} from "../data/users.js";
 import * as userFuncs from "../data/users.js";
+import * as groupFuncs from "../data/group.js";
 import * as helpers from "../helpers.js";
 import {users} from "../config/mongoCollections.js";
 
@@ -284,4 +285,78 @@ router
     }
   });
 
+router.route('/group/:PIN').get(async (req,res) => {
+  let currUser = req.session.user;
+  let group = currUser.group;
+  let isAdmin = currUser.role == "administrator";
+
+  return res.status(200).render('userProfile', {
+    isAdmin,
+    group,
+    errors: false
+  });
+})
+.post(async (req, res) => {
+  const formType = req.body.submitButton;//value is either event or task
+  const body = req.body;
+  let currUser = req.session.user;
+  let group = currUser.group;
+  let isAdmin = currUser.role == "administrator";
+
+  if (formType === 'event') {
+    // handle event form submission
+    //so call addEvent with userId and event data
+    const eventData = {
+      title: body.eventTitle,
+      description: body.eventDescription,
+      startDate: body.startDate,
+      endDate: body.endDate,
+    };
+    try {
+      await groupFuncs.groupAddEvents(group.PIN, eventData);
+      /*let currUser = await userFuncs.getUserById(req.session.user.userId);
+      req.session.user = currUser;*/
+      return res.status(200).redirect(`/group/${group.PIN}`);
+    }
+    catch (e) {
+      return res.status(404).render('group', {
+        isAdmin,
+        group,
+        errors: true,
+        errorMessage: e.toString()
+      });
+    }
+    
+  } else if (formType === 'task') {
+    // handle task form submission
+    const taskData = {
+      progress: decodeURIComponent(body.progress.replace(/\+/g, ' ')), 
+      assignedUsers: [],
+      startDate: body.startDate,
+      endDate: body.endDate,
+      urgencyLevel: Number(body.urgencyLevel),
+      description: body.taskDescription
+    };
+    try {
+      await groupFuncs.groupAddTasks(group.PIN, taskData);
+      return res.status(200).redirect(`/group/${group.PIN}`);
+    }
+    catch (e) {
+      return res.status(404).render('group', {
+        isAdmin,
+        group,
+        errors: true,
+        errorMessage: e.toString()
+      });
+    }
+  } else {
+    // handle error or unknown form
+    return res.status(400).render('group', {
+      isAdmin,
+      group,
+      errors: true,
+      errorMessage: 'Unknown form type'
+    });
+  }
+});
 export default router;
