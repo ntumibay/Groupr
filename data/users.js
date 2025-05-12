@@ -136,12 +136,14 @@ export const addEvents = async (userId, event) => {
     throw "Error: description must be a string";
   }
   
-
-  //check that startDate is before endDate
-  const startDate = helpers.daysToMinutes(event.startDate);
-  const endDate = helpers.daysToMinutes(event.endDate);
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.endDate);
   if (startDate > endDate){
     throw "Error: startDate must be before endDate";
+  }
+  //check that startDate and endDate are valid dates
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
+    throw "Error: startDate and endDate must be valid dates";
   }
 
   //check that description is not empty
@@ -165,8 +167,8 @@ export const addEvents = async (userId, event) => {
   const newEvent = {
     _id: new ObjectId(),
     title: event.title,
-    startDate: event.startDate,
-    endDate: event.endDate,
+    startDate: startDate,
+    endDate: endDate,
     description: event.description
   };
   await userCollection.updateOne(

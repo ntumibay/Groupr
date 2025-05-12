@@ -114,31 +114,12 @@ export const formatLastLogin = () => {
          `${td.getMinutes().toString().padStart(2, '0')}${ampm}`;
 };
 
-//takes in a datetime of the format dow:hh:mm then converts it into the minute it is in the week (0 - 10080 minutes in a week)
-export const daysToMinutes = (datetime) => {
-  const day = datetime.slice(0, datetime.indexOf(":"));
-  const time = datetime.slice(datetime.indexOf(":") + 1);
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const hour = time.split(":").map(Number)[0];
-  const minute = time.split(":").map(Number)[1];
-  return days.indexOf(day) * 1440 + hour * 60 + minute;
-}
-
-//converts a minute in the week and converts it to dow:hh:mmm
-export const minutesToDays = (minutes) => {
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const days_index = Math.floor(minutes/1440);
-  const hour = Math.floor((minutes - 1440*days_index)/60);
-  const minute = minutes - 1440*days_index - 60*hour;
-  return `${days[days_index]}:${hour}:${minute}`;
-}
-
 //takes in a bunch of events
 export const createFreeIntervals = (events) => {
   //converts datetimes in events from dow:hh:mm -> minutes in week
   let datetimes = [];
   for(let event of events) {
-    datetimes.push({startDate: daysToMinutes(event.startDate), endDate: daysToMinutes(event.endDate)});
+    datetimes.push({startDate: event.startDate, endDate: event.endDate});
   }
   datetimes.sort((a, b) => a.startDate - b.startDate);
 
@@ -163,21 +144,15 @@ export const createFreeIntervals = (events) => {
   }
   freeIntervals.push({startDate: busyIntervals[busyIntervals.length-1].endDate, endDate: busyIntervals[0].startDate});
 
-  //reputs the dates back into dow:hh:mm
-  for(let datetime of freeIntervals) {
-    datetime.startDate = minutesToDays(datetime.startDate);
-    datetime.endDate = minutesToDays(datetime.endDate);
-  }
-
   return freeIntervals;
 }
 
-//takes in a bunch of events
+//takes in a bunch of events and returns the intervals where everyone is busy
 export const createBusyIntervals = (events) => {
   //converts datetimes in events from dow:hh:mm -> minutes in week
   let datetimes = [];
   for(let event of events) {
-    datetimes.push({startDate: daysToMinutes(event.startDate), endDate: daysToMinutes(event.endDate)});
+    datetimes.push({startDate: event.startDate, endDate: event.endDate});
   }
   datetimes.sort((a, b) => a.startDate - b.startDate);
 
@@ -194,12 +169,6 @@ export const createBusyIntervals = (events) => {
     }
   }
   busyIntervals.push(lastMerged);
-
-  //reputs the dates back into dow:hh:mm
-  for(let datetime of busyIntervals) {
-    datetime.startDate = minutesToDays(datetime.startDate);
-    datetime.endDate = minutesToDays(datetime.endDate);
-  }
 
   return busyIntervals;
 }

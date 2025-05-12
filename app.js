@@ -337,38 +337,38 @@ async function main() {
   // const events1 = [
   //   {
   //     title: "Team Meeting",
-  //     startDate: "Thu:12:30",
-  //     endDate: "Thu:14:00",
+  //     startDate: "2025-05-15T12:30",
+  //     endDate: "2025-05-15T14:00",
   //     description: "Weekly team sync-up"
   //   },
   //   {
   //     title: "Office Hours",
-  //     startDate: "Mon:10:00",
-  //     endDate: "Mon:11:00",
+  //     startDate: "2025-05-12T10:00",
+  //     endDate: "2025-05-12T11:00",
   //     description: "Student office hours with TA"
   //   },
   //   {
   //     title: "Study Group",
-  //     startDate: "Wed:09:15",
-  //     endDate: "Wed:10:00",
+  //     startDate: "2025-05-14T09:15",
+  //     endDate: "2025-05-14T10:00",
   //     description: "Morning study group session"
   //   },
   //   {
   //     title: "Lab Session",
-  //     startDate: "Tue:18:00",
-  //     endDate: "Tue:19:00",
+  //     startDate: "2025-05-13T18:00",
+  //     endDate: "2025-05-13T19:00",
   //     description: "CS546 Lab on backend development"
   //   },
   //   {
   //     title: "Late Night Coding",
-  //     startDate: "Sat:00:30",
-  //     endDate: "Sat:02:00",
+  //     startDate: "2025-05-17T00:30",
+  //     endDate: "2025-05-17T02:00",
   //     description: "Group hackathon preparation"
   //   },
   //   {
   //     title: "Game Dev Sprint",
-  //     startDate: "Fri:22:00",
-  //     endDate: "Sat:01:00",
+  //     startDate: "2025-05-16T22:00",
+  //     endDate: "2025-05-17T01:00",
   //     description: "Late night game development sprint"
   //   }
   // ];
@@ -376,30 +376,29 @@ async function main() {
   // let events2 = [
   //   {
   //     title: "Lecture Review",
-  //     startDate: "Mon:09:00",
-  //     endDate: "Mon:10:30",
+  //     startDate: "2025-05-12T09:00",
+  //     endDate: "2025-05-12T10:30",
   //     description: "Review session for CS coursework"
   //   },
   //   {
   //     title: "Overnight Server Maintenance",
-  //     startDate: "Sun:23:30",
-  //     endDate: "Mon:01:00",
+  //     startDate: "2025-05-11T23:30",
+  //     endDate: "2025-05-12T01:00",
   //     description: "Scheduled server maintenance"
   //   },
   //   {
   //     title: "Morning Gym",
-  //     startDate: "Wed:08:00",
-  //     endDate: "Wed:09:30",
+  //     startDate: "2025-05-14T08:00",
+  //     endDate: "2025-05-14T09:30",
   //     description: "Workout before class"
   //   },
   //   {
   //     title: "Lunch Meetup",
-  //     startDate: "Thu:12:00",
-  //     endDate: "Thu:13:00",
+  //     startDate: "2025-05-15T12:00",
+  //     endDate: "2025-05-15T13:00",
   //     description: "Quick lunch with classmates"
   //   }
   // ];
-
 
   // for(let event of events1) {
   //   await addEvents("warachnid", event);
@@ -409,7 +408,7 @@ async function main() {
   //   await addEvents("derpysquid", event);
   // }
 
-  // await addMember("warachnid", 123456);
+  await addMember("warachnid", 123456);
   await addMember("derpysquid", 123456);
   const group = await searchGroupById(123456);
   console.log(group.schedule);
