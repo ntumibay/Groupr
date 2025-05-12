@@ -72,6 +72,9 @@ const hbs = exphbs.create({
   helpers: {//helper func for userProfile
     inc: function (value) {
       return parseInt(value) + 1;
+    },
+    eq: function (a, b) {
+       return a === b;
     }
   }
 });
