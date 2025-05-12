@@ -216,6 +216,8 @@ router
     const body = req.body;
     let currUser = req.session.user;
     let fullName = currUser.firstName + " " + currUser.lastName;
+    let combinedStartDate = `${body.startDate}T${body.startTime}`;
+    let combinedEndDate = `${body.endDate}T${body.endTime}`;
 
     if (formType === 'event') {
       // handle event form submission
@@ -223,8 +225,8 @@ router
       const eventData = {
         title: body.eventTitle,
         description: body.eventDescription,
-        startDate: body.startDate,
-        endDate: body.endDate,
+        startDate: combinedStartDate,
+        endDate: combinedEndDate
       };
       try {
         await userFuncs.addEvents(req.session.user.userId, eventData);
