@@ -59,6 +59,8 @@ export const login = async (userId, password) => {
   if (!userId || !password){
     throw "Error: userId and password must be provided";
   }
+  userId = helpers.validateUserId(userId);
+  password = helpers.validatePassword(password);
   userId = userId.trim();
   
 
