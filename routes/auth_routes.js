@@ -217,22 +217,7 @@ router
 
 router.route('/user').get(async (req, res) => {
   //code here for GET
-  let currUser = req.session.user;
-  let t = new Date().toLocaleTimeString();
-  let d = new Date().toLocaleDateString();
-  return res.render('user', {users: true, firstName: currUser.firstName, lastName: currUser.lastName, currentTime: t, currentDate: d,
-    role: currUser.role, signupDate: currUser.signupDate, lastLogin: currUser.lastLogin, user: currUser
-  })
-});
-
-router.route('/superuser').get(async (req, res) => {
-  //code here for GET
-  let currUser = req.session.user;
-  let t = new Date().toLocaleTimeString();
-  let d = new Date().toLocaleDateString();
-  return res.render('superuser', {users: true, firstName: currUser.firstName, lastName: currUser.lastName, currentTime: t, currentDate: d,
-    signupDate: currUser.signupDate, lastLogin: currUser.lastLogin, user: currUser
-  });
+  return res.status(200).redirect(`/user/${req.session.user.userId}`);
 });
 
 router.route('/signout').get(async (req, res) => {

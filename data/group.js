@@ -13,7 +13,7 @@ export const createGroup = async (groupName, userId, pin) => {
     }
 
     //validate inputs
-    groupName = helpers.validateStringInput(groupName, "Group Name").toLowerCase();
+    groupName = helpers.validateStringInput(groupName, "Group Name");
     userId = helpers.validateUserId(userId);
     pin = helpers.validatePIN(pin);
     
@@ -481,7 +481,7 @@ export const viewUserSchedules = async (groupPIN) => {
 
       let schedules = [];
       for(let member of group.members) {
-        let currMember = await userCollection.findOne({userId: member});
+        let currMember = await getUserById(member);
         schedules.push({
           member: currMember.userId,
           events: currMember.schedules.events,

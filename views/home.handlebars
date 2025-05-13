@@ -1,6 +1,6 @@
 <main>
-    <h1 id="appTitle">Login System</h1>
-    <p id="siteDescription">This is a login system</p>
+    <h1 id="appTitle">Groupr</h1>
+    <p id="siteDescription">This is the home page.</p>
 
     {{#if user}}
         {{#if (eq user.role 'administrator')}}
@@ -10,11 +10,12 @@
             <a id="userlink" href="/user">User Page</a>
         {{/if}}
     {{else}}
-        <a id="signuplink" href="/registerUser">Register User Here</a>
-        <a id="loginlink" href="/login">Login Here</a>
+        <div id="signuplinkdiv">
+            <a id="signuplink" href="/registerUser">Register User Here</a>
+        </div>
+        <div id="loginlinkdiv">
+            <a id="loginlink" href="/login">Login Here</a>
+        </div>
     {{/if}}
 
-    <footer>
-        <p>Groupr</p>
-    </footer>
 </main>

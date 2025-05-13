@@ -186,8 +186,8 @@ app.use('/user/:userid', (req, res, next) => {
 configRoutes(app);
 
 app.listen(3000, () => {
-    console.log("We've now got a server!");
-    console.log('Your routes will be running on http://localhost:3000');
+  console.log("We've now got a server!");
+  console.log('Your routes will be running on http://localhost:3000');
 });
 
 
@@ -445,10 +445,17 @@ app.listen(3000, () => {
 //   console.log('Done!');
 // }
 
+/*
+async function main() {
+  // await populate_database();
+  await addTasks("warachnid", {
+    assignedUsers: [],
+    progress: "not started",
+    startDate: "2025-05-13T12:00",
+    endDate: "2025-05-14T00:00",
+    urgencyLevel: 5,
+    description: "fart"
+  });
+}
 
-// // async function main() {
-// //   // await populate_database();
-//   console.log(await viewUserSchedules(123456));
-// // }
-
-// // await main();
+await main();*/
