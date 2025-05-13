@@ -114,6 +114,24 @@ export const formatLastLogin = () => {
          `${td.getMinutes().toString().padStart(2, '0')}${ampm}`;
 };
 
+// Helper: rounds a date down to the most recent Sunday 00:00
+const getWeekStart = (date) => {
+  const weekStart = new Date(date);
+  weekStart.setHours(0, 0, 0, 0);
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+  return weekStart;
+};
+
+// Helper: get minutes since week start
+const getMinutesFromWeekStart = (date, weekStart) => {
+  return Math.floor((date - weekStart) / (1000 * 60));
+};
+
+// Helper: Convert minutes to a Date object
+const minutesToDate = (weekStart, minutes) => {
+  return new Date(weekStart.getTime() + minutes * 60 * 1000);
+};
+
 //takes in a bunch of events
 export const createFreeIntervals = (events) => {
   //if no events are passed return nothing
@@ -121,12 +139,19 @@ export const createFreeIntervals = (events) => {
     return [];
   }
 
+  // Determine week start based on the earliest startDate
+  const earliestStart = new Date(events.reduce((min, e) =>
+    new Date(e.startDate) < new Date(min) ? e.startDate : min,
+    events[0].startDate
+  ));
+  const weekStartDate = getWeekStart(earliestStart);
+  const WEEK_END = 7 * 24 * 60 - 1; // 11:59 PM Saturday
+
   //converts datetimes in events from dow:hh:mm -> minutes in week
-  let datetimes = [];
-  for(let event of events) {
-    datetimes.push({startDate: event.startDate, endDate: event.endDate});
-  }
-  datetimes.sort((a, b) => a.startDate - b.startDate);
+  let datetimes = events.map(event => ({
+    startDate: getMinutesFromWeekStart(new Date(event.startDate), weekStartDate),
+    endDate: getMinutesFromWeekStart(new Date(event.endDate), weekStartDate),
+  })).sort((a, b) => a.startDate - b.startDate);
 
   //gets all the busy blocks
   let busyIntervals = [];
@@ -142,12 +167,32 @@ export const createFreeIntervals = (events) => {
   }
   busyIntervals.push(lastMerged);
 
-  //returns all the free blocks
-  let freeIntervals = [];
-  for(let i = 0; i < busyIntervals.length-1; i++) {
-    freeIntervals.push({startDate: busyIntervals[i].endDate, endDate: busyIntervals[i+1].startDate});
+  // Generate free intervals
+  const freeIntervals = [];
+
+  // Before the first busy block
+  if (busyIntervals[0].startDate > 0) {
+    freeIntervals.push({
+      startDate: minutesToDate(weekStartDate, 0),
+      endDate: minutesToDate(weekStartDate, busyIntervals[0].startDate),
+    });
   }
-  freeIntervals.push({startDate: busyIntervals[busyIntervals.length-1].endDate, endDate: busyIntervals[0].startDate});
+
+  // Between busy intervals
+  for (let i = 0; i < busyIntervals.length - 1; i++) {
+    freeIntervals.push({
+      startDate: minutesToDate(weekStartDate, busyIntervals[i].endDate),
+      endDate: minutesToDate(weekStartDate, busyIntervals[i + 1].startDate),
+    });
+  }
+
+  // After the last busy block
+  if (busyIntervals[busyIntervals.length - 1].endDate < WEEK_END) {
+    freeIntervals.push({
+      startDate: minutesToDate(weekStartDate, busyIntervals[busyIntervals.length - 1].endDate),
+      endDate: minutesToDate(weekStartDate, WEEK_END),
+    });
+  }
 
   return freeIntervals;
 }
