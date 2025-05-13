@@ -8,6 +8,10 @@
         {{#each group.members}}
             <li>{{this}}</li>
         {{/each}}
+    <h2>Administrative Members:</h2>
+        {{#each group.administrativeMembers}}
+            <li>{{this}}</li>
+        {{/each}}
     <h2>Group Events</h2>
             {{#each group.events}}
                 <h3>{{this.title}}</h3>
@@ -71,7 +75,19 @@
             </select>
             <button name="submitButton" id="submitButton" type="submit" value="task">Add Task</button>
         </form>
-
+        <form method="POST" action="/group/{{group.PIN}}" id="addMember">
+            <h2>Add Member</h2>
+            <label for="userId">User ID:</label>
+            <input name="userId" id="userId" type="text" required>
+            <button name="submitButton" id="submitButton" type="submit" value="member">Add Member</button>
+        </form>
+        <form method="POST" action="/group/{{group.PIN}}" id="addAdmin">
+            <h2>Add Member to Administration</h2>
+            <label for="userId">User ID:</label>
+            <input name="userId" id="userId" type="text" required>
+            <button name="submitButton" id="submitButton" type="submit" value="admin">Add Administrator</button>
+        </form>
     </div>
     {{/if}}
+    <a href="/user/{{user.userId}}">Back to User Page</a>
 </main>

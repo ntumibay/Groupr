@@ -337,16 +337,18 @@ router.route('/group/:PIN').get(async (req,res) => {
   let isAdmin = group.administrativeMembers.includes(currUser.userId);
 
   return res.status(200).render('group', {
+    user: currUser,
     isAdmin,
     group,
     errors: false
   });
 })
 .post(async (req, res) => {
-  const formType = req.body.submitButton;//value is either event or task
+  const formType = req.body.submitButton;//value is either event or task or member
   const body = req.body;
   let currUser = req.session.user;
-  let group = currUser.group;
+  let PIN = parseInt(req.params.PIN, 10);
+  let group = await groupFuncs.searchGroupById(PIN);
   let isAdmin = group.administrativeMembers.includes(currUser.userId);
   if (formType === 'event') {
     // handle event form submission
@@ -395,7 +397,43 @@ router.route('/group/:PIN').get(async (req,res) => {
         errorMessage: e.toString()
       });
     }
-  } else {
+  } 
+  
+  else if (formType === 'member'){
+    try {
+      await groupFuncs.addMember(req.body.userId, group.PIN);
+      return res.status(200).redirect(`/group/${group.PIN}`);
+    }
+    catch(e){
+      return res.status(404).render('group',
+        {
+          isAdmin,
+          group,
+          errors: true,
+          errorMessage: e.toString()
+        }
+      )
+    }
+  }
+
+  else if (formType === 'admin'){
+    try {
+      await groupFuncs.assignAdmin(req.body.userId, group.PIN);
+      return res.status(200).redirect(`/group/${group.PIN}`);
+    }
+    catch(e){
+      return res.status(404).render('group',
+        {
+          isAdmin,
+          group,
+          errors: true,
+          errorMessage: e.toString()
+        }
+      )
+    }
+  }
+
+  else {
     // handle error or unknown form
     return res.status(400).render('group', {
       isAdmin,
