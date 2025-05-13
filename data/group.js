@@ -202,8 +202,8 @@ export const groupAddEvents = async (groupPIN, event) => {
     throw "Error: description must be a string";
   }
   //check that startDate is before endDate
-  const startDate = event.startDate;
-  const endDate = event.endDate;
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.endDate);
   if (startDate > endDate){
     throw "Error: startDate must be before endDate";
   }
@@ -228,8 +228,8 @@ export const groupAddEvents = async (groupPIN, event) => {
   const newEvent = {
     _id: new ObjectId(),
     title: event.title,
-    startDate: event.startDate,
-    endDate: event.endDate,
+    startDate: startDate,
+    endDate: endDate,
     description: event.description
   };
   await groupCollection.updateOne(
@@ -363,8 +363,8 @@ export const groupAddTasks = async (groupPIN, task) => {
     _id: new ObjectId(),
     assignedUsers: task.assignedUsers,
     progress: task.progress,
-    startDate: task.startDate,
-    endDate: task.endDate,
+    startDate: startDate,
+    endDate: endDate,
     urgencyLevel: task.urgencyLevel,
     description: task.description
   };

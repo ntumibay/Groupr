@@ -293,11 +293,13 @@ router
       
     } else if (formType === 'task') {
       // handle task form submission
+      let combinedStartDate = `${body.startDate}T${body.startTime}`;
+      let combinedEndDate = `${body.endDate}T${body.endTime}`;
       const taskData = {
         progress: decodeURIComponent(body.progress.replace(/\+/g, ' ')),
         assignedUsers: [],
-        startDate: body.startDate,
-        endDate: body.endDate,
+        startDate: combinedStartDate,
+        endDate: combinedEndDate,
         urgencyLevel: Number(body.urgencyLevel),
         description: body.taskDescription
       };

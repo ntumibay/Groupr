@@ -185,12 +185,12 @@ app.use('/user/:userid', (req, res, next) => {
 
 configRoutes(app);
 
-app.listen(3000, () => {
-    console.log("We've now got a server!");
-    console.log('Your routes will be running on http://localhost:3000');
-});
+// app.listen(3000, () => {
+//     console.log("We've now got a server!");
+//     console.log('Your routes will be running on http://localhost:3000');
+// });
 
-/*
+
 //below checks functions work b4 creating routes
 async function populate_database() {
   const db = await dbConnection();
@@ -218,8 +218,8 @@ async function populate_database() {
     console.log(await addTasks("teriya", {
       assignedUsers: ["teriya"], 
       progress: "not started", 
-      startDate: "Thu:10:30", 
-      endDate: "The:12:30",
+      startDate: "2025-05-13T12:30", 
+      endDate: "2025-05-16T12:30",
       urgencyLevel: 5,
       description: "CS546 Final Project"
     }));
@@ -266,8 +266,8 @@ async function populate_database() {
     console.log(await groupAddTasks(123456, {
       assignedUsers: ["teriya"], 
       progress: "not started", 
-      startDate: "2025-10-01", 
-      endDate: "2025-12-01",
+      startDate: "2025-10-01T12:30", 
+      endDate: "2025-12-01T12:30",
       urgencyLevel: 5,
       description: "CS546 Final Project"
     }));
@@ -307,7 +307,7 @@ async function populate_database() {
     console.log(await groupAddEvents(123456, {
       title: "Testing groupAddEvents",
       startDate: "2025-05-10T12:30",
-      endDate: "2025-05-20T14:00",
+      endDate: "2025-05-10T14:00",
       description: "Weekly team sync-up"
     }
     ));
@@ -389,7 +389,7 @@ async function populate_database() {
   for(let event of events2) {
     await addEvents("derpysquid", event);
   }
-  
+
   await addMember("warachnid", 123456);
   await addMember("derpysquid", 123456);
 
@@ -406,8 +406,8 @@ async function populate_database() {
       {
       assignedUsers: ["teriya", 'graffixnyc', 'derpyquid', 'warachnid'], 
       progress: "not started", 
-      startDate: "2025-09-11", 
-      endDate: "2025-12-07",
+      startDate: "2025-09-11T12:30", 
+      endDate: "2025-12-07T12:30",
       urgencyLevel: 5,
       description: "EVERYONE GET ON THIS"
     }
@@ -426,4 +426,4 @@ async function main() {
   await populate_database();
 }
 
-main();*/
+main();
