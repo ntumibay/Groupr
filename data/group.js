@@ -133,6 +133,20 @@ export const addMember = async (userId, groupPIN) => {
     if (updateResult.modifiedCount === 0) {
         throw "Error: Failed to add member to group";
     }
+
+        const addDate = new Date();
+    if (groupExists.schedule.events.length!=0){
+      for (let i=0; i<groupExists.schedule.events.length; i++){
+        const sd = new Date(groupExists.schedule.events[i].startDate);
+        const ed = new Date(groupExists.schedule.events[i].endDate);
+        if (addDate >= sd && addDate <= ed){
+          await userCollection.updateOne(
+            {userId: userId},
+            {$push: {"schedules.events": groupExists.schedule.events[i]}}
+          );
+        }
+      }
+    }
     
     return { success: true };
 }
@@ -204,8 +218,6 @@ export const groupAddEvents = async (groupPIN, event) => {
   }
 
   //getting here implies event is valid. now add to user's schedule subdocument
-
-
   const groupCollection = await groups();
   let group = await groupCollection.findOne({PIN: groupPIN});
   if (!group){
@@ -223,6 +235,28 @@ export const groupAddEvents = async (groupPIN, event) => {
   await groupCollection.updateOne(
     {_id: group._id},
     {$push: {"schedule.events": newEvent}}
+  );
+
+  if (!Array.isArray(group.members) || group.members.length==0){
+    throw "Error: Group is empty."
+  }
+  const userCollection = await users();
+
+  const updateResults = await Promise.allSettled(
+    group.members.map(async (memberId) => {
+      try {
+        const result = await userCollection.updateOne(
+          { userId: memberId }, 
+          { $push: { "schedules.events": newEvent } }
+        );
+        if (result.modifiedCount === 0) {
+          throw `User ${memberId} not updated (possibly not found)`;
+        }
+        return result;
+      } catch (err) {
+        throw `Failed to update user ${memberId}:`;
+      }
+    })
   );
 
   return newEvent;
@@ -334,6 +368,20 @@ export const groupAddTasks = async (groupPIN, task) => {
     urgencyLevel: task.urgencyLevel,
     description: task.description
   };
+  if (!Array.isArray(task.assignedUsers) || task.assignedUsers.length==0){
+    throw "Please enter the usernames of the people you want to assign this task to.";
+  }
+
+  for (let i=0; i<task.assignedUsers.length; i++){
+    let user = await userCollection.findOne({userId: task.assignedUsers[i]});
+    if (!group.members.includes(user.userId)){
+      throw "Error: A user you have assigned the task to is not in the group.";
+    }
+    await userCollection.updateOne(
+      {_id: user._id},
+      {$push: {"schedules.tasks": newTask}}
+    );
+  }
   await groupCollection.updateOne(
     {_id: group._id},
     {$push: {"schedule.tasks": newTask}}
@@ -341,3 +389,64 @@ export const groupAddTasks = async (groupPIN, task) => {
 
   return newTask;
 }
+
+export const updateProgress = async (groupPIN, taskId, newProgress, userId) => {
+    groupPIN = helpers.validatePIN(groupPIN);
+    taskId = taskId.toString().trim();
+    newProgress = newProgress.trim().toLowerCase();
+    //only these inputs are allowed
+    if (!['not started', 'in progress', 'finished'].includes(newProgress)) {
+        throw "Error: Progress must be 'not started', 'in progress', or 'finished'";
+    }
+
+    const groupCollection = await groups();
+    const userCollection = await users();
+
+    //find group and task
+    const group = await groupCollection.findOne({ PIN: groupPIN });
+    if (!group) throw "Error: Group not found";
+
+    const task = group.schedule.tasks.find(t => t._id.toString() === taskId);
+    if (!task) throw "Error: Task not found";
+
+    //only admins/assignedUsers can update this
+    const isAdmin = group.administrativeMembers.includes(userId);
+    const isAssigned = task.assignedUsers.includes(userId);
+    
+    if (!isAdmin && !isAssigned) {
+        throw "Error: User not authorized to update this task";
+    }
+
+    //update task progress in group
+    const updateResult = await groupCollection.updateOne(
+        { 
+            PIN: groupPIN,
+            "schedule.tasks._id": new ObjectId(taskId)
+        },
+        {
+            $set: { "schedule.tasks.$.progress": newProgress }
+        }
+    );
+
+    if (updateResult.modifiedCount === 0) {
+        throw "Error: Failed to update task progress";
+    }
+
+    //update task progress for assignedUsers
+    const userUpdatePromises = task.assignedUsers.map(async assignedUserId => {
+        await userCollection.updateOne(
+            {
+                userId: assignedUserId,
+                "schedules.tasks._id": new ObjectId(taskId)
+            },
+            {
+                $set: { "schedules.tasks.$.progress": newProgress }
+            }
+        );
+    });
+
+    //return updated task
+    const updatedGroup = await groupCollection.findOne({ PIN: groupPIN });
+    const updatedTask = updatedGroup.schedule.tasks.find(t => t._id.toString() === taskId);
+    return updatedTask;
+};
