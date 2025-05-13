@@ -218,8 +218,6 @@ export const groupAddEvents = async (groupPIN, event) => {
   }
 
   //getting here implies event is valid. now add to user's schedule subdocument
-
-
   const groupCollection = await groups();
   let group = await groupCollection.findOne({PIN: groupPIN});
   if (!group){
@@ -248,16 +246,15 @@ export const groupAddEvents = async (groupPIN, event) => {
     group.members.map(async (memberId) => {
       try {
         const result = await userCollection.updateOne(
-          { userId: memberId }, // Changed to use direct memberId
+          { userId: memberId }, 
           { $push: { "schedules.events": newEvent } }
         );
         if (result.modifiedCount === 0) {
-          console.error(`User ${memberId} not updated (possibly not found)`);
+          throw `User ${memberId} not updated (possibly not found)`;
         }
         return result;
       } catch (err) {
-        console.error(`Failed to update user ${memberId}:`, err);
-        throw err; // Optional: rethrow to fail completely
+        throw `Failed to update user ${memberId}:`;
       }
     })
   );
