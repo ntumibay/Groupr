@@ -21,7 +21,7 @@ main {
 
 h1 {
     display: block;
-    text-align: right;
+    text-align: left;
     color: inherit; /* Inherits from body */
 }
 
@@ -42,8 +42,13 @@ form > label {
 }
 
 input[type=text] {
-    padding: 10%;
     background-color: var(--user-input-bg, white);
+}
+
+textarea{
+    text-align: left; /* Aligns text to the left */
+    vertical-align: top; /* Aligns text to the top */
+    padding: 8px; /* Adds some padding so text isn't touching edges */
 }
 
 h2 {
