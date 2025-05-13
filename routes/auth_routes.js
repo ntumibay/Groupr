@@ -11,6 +11,7 @@ export const nameRegex = /^[a-zA-Z]{2,20}$/;
 export const idRegex = /^[a-zA-Z0-9]{5,10}$/;
 export const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
 export const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+export const pinRegex = /^\d{6}$/;
 
 router.route('/').get(async (req, res) => {
   //code here for GET
@@ -23,14 +24,14 @@ router.route('/').get(async (req, res) => {
 });
 
 router
-  .route('/register')
+  .route('/registerUser')
   .get(async (req, res) => {
     //code here for GET
     try {
       if (req.session.user){
         return res.redirect('/');
       }
-      return res.render('register');
+      return res.render('registerUser');
     }
     catch (e){
       return res.status(500).render('error', {errors: e.message, title: 'Error'});
@@ -47,32 +48,30 @@ router
         let userId = regData.userId.trim();
         let password = regData.password.trim();
         let confirmPassword = regData.confirmPassword.trim();
-        let role = regData.role.trim();
         let missingFields = [];
         if (!firstName) missingFields.push('First Name');
         if (!lastName) missingFields.push('Last Name');
         if (!userId) missingFields.push('User ID');
         if (!password) missingFields.push('Password');
         if (!confirmPassword) missingFields.push('Confirmed Password');
-        if (!role) missingFields.push('role');
 
         if (missingFields.length>0){
-            return res.status(400).render('register', {errors: true, errorMessage: `${missingFields.toString()} must be filled`});
+            return res.status(400).render('registerUser', {errors: true, errorMessage: `${missingFields.toString()} must be filled`});
         }
         if (!nameRegex.test(firstName.trim()) || !nameRegex.test(lastName.trim())){
-            return res.status(400).render('register', {errors: true, errorMessage: 'First/Last name must be between 2 and 20 letters, and cannot have spaces'});
+            return res.status(400).render('registerUser', {errors: true, errorMessage: 'First/Last name must be between 2 and 20 letters, and cannot have spaces'});
         }
 
         if (!idRegex.test(userId.trim())){
-            return res.status(400).render('register', {errors: true, errorMessage: 'User ID must be between 5 and 10 characters, and cannot have spaces'});
+            return res.status(400).render('registerUser', {errors: true, errorMessage: 'User ID must be between 5 and 10 characters, and cannot have spaces'});
         }
 
         if (!passwordRegex.test(password.trim())){
-            return res.status(400).render('register', {errors: true, errorMessage: 'Password must be at least 8 characters, and contain an uppercase letter, a lowercase letter, a number, and a special character'});
+            return res.status(400).render('registerUser', {errors: true, errorMessage: 'Password must be at least 8 characters, and contain an uppercase letter, a lowercase letter, a number, and a special character'});
         }
     
         if (password !== confirmPassword) {
-            return res.status(400).render('register', {errors: true, errorMessage: 'Passwords do not match'});
+            return res.status(400).render('registerUser', {errors: true, errorMessage: 'Passwords do not match'});
         }
     
         //register user
@@ -80,17 +79,69 @@ router
           firstName.trim(),
           lastName.trim(),
           userId.trim().toLowerCase(),
-          password,
-          role.toLowerCase()
+          password
         );
     
         if (!result.registrationCompleted) {
           throw { code: 500, error: "Registration failed - please try again" };
         }
     
-        return res.redirect('/login');
+        return res.redirect('/');
       } catch (e) {
-        return res.status(400).render('register', {
+        return res.status(400).render('registerUser', {
+          errors: true,
+          errorMessage: e
+        });
+    }
+  });
+
+router
+  .route('/registerGroup')
+  .get(async (req, res) => {
+    //code here for GET
+    try {
+      return res.render('registerGroup');
+    }
+    catch (e){
+      return res.status(500).render('error', {errors: e.message, title: 'Error'});
+    }
+  })
+  .post(async (req, res) => {
+    //code here for POST
+    let regData = req.body;
+    let userId = req.session.user.userId;
+      try {
+        //input validation
+        let name = regData.name.trim();
+        let PIN = parseInt(regData.PIN.trim(), 10);
+        let missingFields = [];
+        if (!name) missingFields.push('Group Name');
+        if (!PIN) missingFields.push('PIN');
+        
+        if (missingFields.length>0){
+            return res.status(400).render('registerGroup', {errors: true, errorMessage: `${missingFields.toString()} must be filled`});
+        }
+
+        if (!pinRegex.test(PIN)){
+            return res.status(400).render('registerGroup', {errors: true, errorMessage: 'PIN must be a positive 6 digit number'});
+        }
+    
+        //register user
+        const result = await groupFuncs.createGroup(
+          name.trim(),
+          userId.trim().toLowerCase(),
+          PIN
+        );
+    
+        if (!result.registrationCompleted) {
+          throw { code: 500, error: "Registration failed - please try again" };
+        }
+        let group = await groupFuncs.searchGroupById(PIN);
+        return res.render(`group`, {
+          group
+        });
+      } catch (e) {
+        return res.status(400).render('registerGroup', {
           errors: true,
           errorMessage: e
         });
@@ -172,7 +223,6 @@ router.route('/user').get(async (req, res) => {
   let currUser = req.session.user;
   let t = new Date().toLocaleTimeString();
   let d = new Date().toLocaleDateString();
-  let suCheck = req.session.user && req.session.user.role==='administrator';
   return res.render('user', {users: true, firstName: currUser.firstName, lastName: currUser.lastName, currentTime: t, currentDate: d,
     role: currUser.role, signupDate: currUser.signupDate, lastLogin: currUser.lastLogin, user: currUser
   })
@@ -205,7 +255,6 @@ router
     return res.status(200).render('userProfile', {
       userId: currUser.userId,
       fullName: fullName,
-      role: currUser.role,
       events: currUser.schedules.events,
       tasks: currUser.schedules.tasks,
       errors: false
@@ -238,7 +287,6 @@ router
         return res.status(404).render('userProfile', {
           userId: currUser.userId,
           fullName: fullName,
-          role: currUser.role,
           events: currUser.schedules.events,
           tasks: currUser.schedules.tasks,
           errors: true,
@@ -266,7 +314,6 @@ router
         return res.status(404).render('userProfile', {
           userId: currUser.userId,
           fullName: fullName,
-          role: currUser.role,
           events: currUser.schedules.events,
           tasks: currUser.schedules.tasks,
           errors: true,
@@ -278,7 +325,6 @@ router
       return res.status(400).render('userProfile', {
         userId: currUser.userId,
         fullName: fullName,
-        role: currUser.role,
         events: currUser.schedules.events,
         tasks: currUser.schedules.tasks,
         errors: true,
@@ -290,9 +336,9 @@ router
 router.route('/group/:PIN').get(async (req,res) => {
   let currUser = req.session.user;
   let group = currUser.group;
-  let isAdmin = currUser.role == "administrator";
+  let isAdmin = group.administrativeMembers.includes(currUser.userId);
 
-  return res.status(200).render('userProfile', {
+  return res.status(200).render('group', {
     isAdmin,
     group,
     errors: false
@@ -303,8 +349,7 @@ router.route('/group/:PIN').get(async (req,res) => {
   const body = req.body;
   let currUser = req.session.user;
   let group = currUser.group;
-  let isAdmin = currUser.role == "administrator";
-
+  let isAdmin = group.administrativeMembers.includes(currUser.userId);
   if (formType === 'event') {
     // handle event form submission
     //so call addEvent with userId and event data
@@ -314,6 +359,7 @@ router.route('/group/:PIN').get(async (req,res) => {
       startDate: body.startDate,
       endDate: body.endDate,
     };
+    
     try {
       await groupFuncs.groupAddEvents(group.PIN, eventData);
       /*let currUser = await userFuncs.getUserById(req.session.user.userId);

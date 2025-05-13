@@ -15,7 +15,6 @@ and their tasks/events alr set up
         <ul>
             <li>Name: {{ fullName }}</li>
             <li>Username: {{userId}}</li>
-            <li>Role: {{role}}</li>
         </ul>
         <h2>Events</h2>
             {{#each events}}
@@ -88,5 +87,8 @@ and their tasks/events alr set up
             <button name="submitButton" id="submitButton" type="submit" value="task">Add Task</button>
         </form>
 
+    </div>
+    <div id="createGroup">
+        <a href="/registerGroup">Click here to create a group!</a>
     </div>
 </main>
