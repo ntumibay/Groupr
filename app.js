@@ -303,6 +303,20 @@ app.listen(3000, () => {
 //     console.log(e);
 //   }
 
+<<<<<<< HEAD
+  try {
+    console.log(await groupAddEvents(123456, {
+      title: "Testing groupAddEvents",
+      startDate: "2025-05-10T12:30",
+      endDate: "2025-05-10T16:00",
+      description: "Weekly team sync-up"
+    }
+    ));
+  }
+  catch (e){
+    console.error(e);
+  }
+=======
 //   try {
 //     console.log(await groupAddEvents(123456, {
 //       title: "Testing groupAddEvents",
@@ -315,6 +329,7 @@ app.listen(3000, () => {
 //   catch (e){
 //     console.error(e);
 //   }
+>>>>>>> 1acdd060df50e04eeef5e9520bdb08d25e11b547
 
 //   const events1 = [
 //     {
