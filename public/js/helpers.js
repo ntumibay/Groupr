@@ -17,7 +17,7 @@ export const validateStringInput = (input, fieldName) => {
 export const validatePIN = (pin) => {
   if (!pin) throw "Error: PIN must be provided";
   if (!Number.isInteger(pin)) throw "Error: PIN must be an int";
-  let pStr = pin.toString().trim();
+  let pStr = pin.toString();
   if (!pinRegex.test(pStr)) throw "Error: PIN must be a positive, 6-digit integer";
   return pin;
 };
@@ -114,24 +114,6 @@ export const formatLastLogin = () => {
          `${td.getMinutes().toString().padStart(2, '0')}${ampm}`;
 };
 
-// Helper: rounds a date down to the most recent Sunday 00:00
-const getWeekStart = (date) => {
-  const weekStart = new Date(date);
-  weekStart.setHours(0, 0, 0, 0);
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-  return weekStart;
-};
-
-// Helper: get minutes since week start
-const getMinutesFromWeekStart = (date, weekStart) => {
-  return Math.floor((date - weekStart) / (1000 * 60));
-};
-
-// Helper: Convert minutes to a Date object
-const minutesToDate = (weekStart, minutes) => {
-  return new Date(weekStart.getTime() + minutes * 60 * 1000);
-};
-
 //takes in a bunch of events
 export const createFreeIntervals = (events) => {
   //if no events are passed return nothing
@@ -139,19 +121,12 @@ export const createFreeIntervals = (events) => {
     return [];
   }
 
-  // Determine week start based on the earliest startDate
-  const earliestStart = new Date(events.reduce((min, e) =>
-    new Date(e.startDate) < new Date(min) ? e.startDate : min,
-    events[0].startDate
-  ));
-  const weekStartDate = getWeekStart(earliestStart);
-  const WEEK_END = 7 * 24 * 60 - 1; // 11:59 PM Saturday
-
   //converts datetimes in events from dow:hh:mm -> minutes in week
-  let datetimes = events.map(event => ({
-    startDate: getMinutesFromWeekStart(new Date(event.startDate), weekStartDate),
-    endDate: getMinutesFromWeekStart(new Date(event.endDate), weekStartDate),
-  })).sort((a, b) => a.startDate - b.startDate);
+  let datetimes = [];
+  for(let event of events) {
+    datetimes.push({startDate: event.startDate, endDate: event.endDate});
+  }
+  datetimes.sort((a, b) => a.startDate - b.startDate);
 
   //gets all the busy blocks
   let busyIntervals = [];
@@ -167,35 +142,15 @@ export const createFreeIntervals = (events) => {
   }
   busyIntervals.push(lastMerged);
 
-  // Generate free intervals
-  const freeIntervals = [];
-
-  // Before the first busy block
-  if (busyIntervals[0].startDate > 0) {
-    freeIntervals.push({
-      startDate: minutesToDate(weekStartDate, 0),
-      endDate: minutesToDate(weekStartDate, busyIntervals[0].startDate),
-    });
+  //returns all the free blocks
+  let freeIntervals = [];
+  for(let i = 0; i < busyIntervals.length-1; i++) {
+    freeIntervals.push({startDate: busyIntervals[i].endDate, endDate: busyIntervals[i+1].startDate});
   }
-
-  // Between busy intervals
-  for (let i = 0; i < busyIntervals.length - 1; i++) {
-    freeIntervals.push({
-      startDate: minutesToDate(weekStartDate, busyIntervals[i].endDate),
-      endDate: minutesToDate(weekStartDate, busyIntervals[i + 1].startDate),
-    });
-  }
-
-  // After the last busy block
-  if (busyIntervals[busyIntervals.length - 1].endDate < WEEK_END) {
-    freeIntervals.push({
-      startDate: minutesToDate(weekStartDate, busyIntervals[busyIntervals.length - 1].endDate),
-      endDate: minutesToDate(weekStartDate, WEEK_END),
-    });
-  }
+  freeIntervals.push({startDate: busyIntervals[busyIntervals.length-1].endDate, endDate: busyIntervals[0].startDate});
 
   return freeIntervals;
-}
+};
 
 //takes in a bunch of events and returns the intervals where everyone is busy
 export const createBusyIntervals = (events) => {
@@ -226,4 +181,131 @@ export const createBusyIntervals = (events) => {
   busyIntervals.push(lastMerged);
 
   return busyIntervals;
-}
+};
+
+export const validateUserEvent = (event) => {
+  if (!event){
+    throw "Error: event must be provided";
+  }
+  //below checks event. May be moves to helpers at later date
+  if (typeof event != 'object') {throw "Error: event must be an object";}
+  //make sure the only keys are title, startDate, endDate, description
+  const eventKeys = Object.keys(event);
+  const validKeys = ['title', 'startDate', 'endDate', 'description'];
+  for (let i = 0; i < eventKeys.length; i++){
+    if (!validKeys.includes(eventKeys[i])){
+      throw "Error: event can only contain title, startDate, endDate, and description";
+    }
+  }
+  //check that title is a string
+  if (!event.title || typeof event.title !== 'string'){
+    throw "Error: title must be a string";
+  }
+  //check that startDate and endDate are strings
+  if (!event.startDate || typeof event.startDate !== 'string'){
+    throw "Error: startDate must be a string";
+  }
+  if (!event.endDate || typeof event.endDate !== 'string'){
+    throw "Error: endDate must be a string";
+  }
+  //check that description is a string
+  if (!event.description || typeof event.description !== 'string'){
+    throw "Error: description must be a string";
+  }
+  
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.endDate);
+  if (startDate > endDate){
+    throw "Error: startDate must be before endDate";
+  }
+  //check that startDate and endDate are valid dates
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
+    throw "Error: startDate and endDate must be valid dates";
+  }
+
+  //check that description is not empty
+  if (event.description.trim() === ''){
+    throw "Error: description cannot be empty";
+  }
+  //check that title is not empty
+  if (event.title.trim() === ''){
+    throw "Error: title cannot be empty";
+  }
+};
+
+export const validateUserTask = (task) => {
+  //below checks task. May be moves to helpers at later date
+  if (typeof task != 'object') {throw "Error: task must be an object";}
+  //make sure the only keys are title, startDate, endDate, description
+  const eventKeys = Object.keys(task);
+  const validKeys = ['progress', 'assignedUsers', 'startDate', 'endDate', 'startTime', 'endTime', 'urgencyLevel', 'description'];
+  for (let i = 0; i < eventKeys.length; i++){
+    if (!validKeys.includes(eventKeys[i])){
+      throw "Error: event can only contain title, startDate, endDate, and description";
+    }
+  }
+  //check that progress is a string
+  if (!task.progress || typeof task.progress !== 'string'){
+    throw "Error: progress must be a string";
+  }
+  //check that progress is either "not started", "in progress", or "finished"
+  if (task.progress !== 'not started' && task.progress !== 'in progress' && task.progress !== 'finished'){
+    throw "Error: progress must be either 'not started', 'in progress', or 'finished'";
+  }
+
+
+  //check that startDate and endDate are strings
+  if (!task.startDate || typeof task.startDate !== 'string'){
+    throw "Error: startDate must be a string";
+  }
+  if (!task.endDate || typeof task.endDate !== 'string'){
+    throw "Error: endDate must be a string";
+  }
+  //check that description is a string
+  if (!task.description || typeof task.description !== 'string'){
+    throw "Error: description must be a string";
+  }
+  //check that startDate is before endDate
+  const startDate = new Date(task.startDate);
+  const endDate = new Date(task.endDate);
+  if (startDate > endDate){
+    throw "Error: startDate must be before endDate";
+  }
+  //check that startDate and endDate are valid dates
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
+    throw "Error: startDate and endDate must be valid dates";
+  }
+
+  const parseTime = (timeStr) => {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  if (isNaN(hours)) throw `Error: Invalid time format (use HH:MM)`;
+    return { hours, minutes };
+  };
+  const startTime = parseTime(task.startTime);
+  const endTime = parseTime(task.endTime);
+
+  // Validate time logic for same-day tasks
+  if (startDate.toDateString == endDate.toDateString) {
+    if (startTime.hours > endTime.hours || 
+        (startTime.hours === endTime.hours && startTime.minutes >= endTime.minutes)) {
+      throw "Error: For same-day tasks, startTime must be before endTime";
+    }
+  }
+
+  //check that assignedUSers is an array of strings
+  if (!task.assignedUsers || !Array.isArray(task.assignedUsers)){
+    throw "Error: assignedUsers must be an array of strings";
+  }
+
+  //check that urgencyLevel is an int between 1 and 5 inclusive
+  if (!task.urgencyLevel || typeof task.urgencyLevel !== 'number'){
+    throw "Error: urgencyLevel must be an int between 1 and 5 inclusive";
+  }
+  if (task.urgencyLevel < 1 || task.urgencyLevel > 5){
+    throw "Error: urgencyLevel must be an int between 1 and 5 inclusive";
+  }
+  //check that description is not empty
+  if (task.description.trim() === ''){
+    throw "Error: description cannot be empty";
+  }
+};
