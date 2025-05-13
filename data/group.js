@@ -260,24 +260,21 @@ export const groupAddEvents = async (groupPIN, event) => {
   }
   const userCollection = await users();
 
-  const updateResults = await Promise.allSettled(
-    group.members.map(async (memberId) => {
-      try {
-        let totalEvents = groupTotalEvents.concat(userExists.schedules.events);
+  for (const memberId of group.members) {
+    try {
         const result = await userCollection.updateOne(
-          { userId: memberId }, 
-          { $push: { "schedules.events": newEvent },
-            $set: { "schedules.userFreeTime": helpers.createFreeIntervals(totalEvents)} }
+            { userId: memberId },
+            { $push: { "schedules.events": newEvent } }
         );
+        
         if (result.modifiedCount === 0) {
-          throw `User ${memberId} not updated (possibly not found)`;
+            console.error(`User ${memberId} not updated (possibly not found)`);
+            continue; 
         }
-        return result;
-      } catch (err) {
-        throw `Failed to update user ${memberId}:`;
-      }
-    })
-  );
+    } catch (err) {
+        console.error(`Failed to update user ${memberId}:`, err);
+    }
+}
 
   return newEvent;
 }
