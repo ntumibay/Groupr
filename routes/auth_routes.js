@@ -364,8 +364,8 @@ router.route('/group/:PIN').get(async (req,res) => {
     
     try {
       await groupFuncs.groupAddEvents(group.PIN, eventData);
-      /*let currUser = await userFuncs.getUserById(req.session.user.userId);
-      req.session.user = currUser;*/
+      let currUser = await userFuncs.getUserById(req.session.user.userId);
+      req.session.user = currUser;
       return res.status(200).redirect(`/group/${group.PIN}`);
     }
     catch (e) {
