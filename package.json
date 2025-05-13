@@ -6,7 +6,7 @@
   "type": "module",
   "dependencies": {
     "axios": "^1.8.4",
-    "bcrypt": "^5.1.1",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "blueimp-md5": "^2.19.0",
     "cookie-parser": "^1.4.7",

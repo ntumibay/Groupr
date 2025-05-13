@@ -6,10 +6,14 @@
         {{/if}}
         <h2>Members:</h2>
         {{#each group.members}}
-            <li>{{this.name}}</li>
+            <li>{{this}}</li>
+        {{/each}}
+    <h2>Administrative Members:</h2>
+        {{#each group.administrativeMembers}}
+            <li>{{this}}</li>
         {{/each}}
     <h2>Group Events</h2>
-            {{#each group.events}}
+            {{#each group.schedule.events}}
                 <h3>{{this.title}}</h3>
                 <ul>
                     <li>Start Date: {{this.startDate}}</li>
@@ -19,15 +23,25 @@
             {{/each}}
 
         <h2>Tasks</h2>
-            {{#each group.tasks}}
+            {{#each group.schedule.tasks}}
                 <h3>Task {{inc @index}}</h3>
                 <ul>
                     <li>Progress: {{this.progress}}</li>
                     <li>Start Date: {{this.startDate}}</li>
                     <li>End Date: {{this.endDate}}</li>
                     <li>Urgency Level: {{this.urgencyLevel}}</li>
+                    {{#each group.schedule.tasks.assignedUsers}}
+                        <li>{{this}}</li>
+                    {{/each}}
                 </ul>
                 <p>Description: {{this.description}}</p>
+            {{/each}}
+        <h2>Group Free Time</h2>
+            {{#each group.schedule.groupFreeTime}}
+                <ul>
+                    <li>Start Date: {{this.startDate}}</li>
+                    <li>End Date: {{this.endDate}}</li>
+                </ul>
             {{/each}}
     </div>
     {{#if isAdmin}}
@@ -39,10 +53,13 @@
             <h2>Add Event</h2>
             <label for="eventTitle">Event Title:</label>
             <input name="eventTitle" id="eventTitle" type="text" required>
-            <label for="startDate">Start Date:</label>
-            <input name="startDate" id="startDate" type="date" required>
+           <input name="startDate" id="startDate" type="date" required>
             <label for="endDate">End Date:</label>
             <input name="endDate" id="endDate" type="date" required>
+            <label for="startTime">Start Time:</label>
+            <input name="startTime" id="startTime" type="time" required>
+            <label for="endTime">Start Time:</label>
+            <input name="endTime" id="endTime" type="time" required>
             <label for="eventDescription">Event Description:</label>
             <textarea name="eventDescription" id="eventDescription"></textarea>
             <button name="submitButton" id="submitButton" type="submit" value="event">Add Event</button>
@@ -57,10 +74,13 @@
                 <option value="in progress">In Progress</option>
                 <option value="finished">Finished</option>
             </select>
-            <label for="startDate">Start Date:</label>
             <input name="startDate" id="startDate" type="date" required>
             <label for="endDate">End Date:</label>
             <input name="endDate" id="endDate" type="date" required>
+            <label for="startTime">Start Time:</label>
+            <input name="startTime" id="startTime" type="time" required>
+            <label for="endTime">Start Time:</label>
+            <input name="endTime" id="endTime" type="time" required>
             <label for="urgencyLevel">Urgency Level:</label>
             <select name="urgencyLevel" id="urgencyLevel">
                 <option value="1">1 (Low)</option>
@@ -69,9 +89,23 @@
                 <option value="4">4 </option>
                 <option value="5">5 (High)</option>
             </select>
+            <label for="assignedUsers" id="assignedUsers" type="text" required>Assign Users</label>
+            <input name="assignedUsers" id="assignedUsers" type="text">
             <button name="submitButton" id="submitButton" type="submit" value="task">Add Task</button>
         </form>
-
+        <form method="POST" action="/group/{{group.PIN}}" id="addMember">
+            <h2>Add Member</h2>
+            <label for="userId">User ID:</label>
+            <input name="userId" id="userId" type="text" required>
+            <button name="submitButton" id="submitButton" type="submit" value="member">Add Member</button>
+        </form>
+        <form method="POST" action="/group/{{group.PIN}}" id="addAdmin">
+            <h2>Add Member to Administration</h2>
+            <label for="userId">User ID:</label>
+            <input name="userId" id="userId" type="text" required>
+            <button name="submitButton" id="submitButton" type="submit" value="admin">Add Administrator</button>
+        </form>
     </div>
     {{/if}}
+    <a href="/user/{{user.userId}}">Back to User Page</a>
 </main>

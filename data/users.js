@@ -1,19 +1,19 @@
 //import mongo collections, bcrypt and implement the following data functions
-import { users } from "../config/mongoCollections.js";
+import { users, groups } from "../config/mongoCollections.js";
 import * as helpers from "../helpers.js";
 import bcrypt from "bcrypt";
 import {ObjectId} from "mongodb";
+import { searchGroupById } from "./group.js";
 
-const saltRounds = 16;
+const saltRounds = 8;
 
 export const register = async (
   firstName,
   lastName,
   userId,
-  password,
-  role
+  password
 ) => {
-  if (!firstName || !lastName || !userId || !password || !role){
+  if (!firstName || !lastName || !userId || !password){
     throw "Error: All fields must be supplied";
   }
 
@@ -21,7 +21,6 @@ export const register = async (
   lastName = helpers.validateName(lastName, 'Last name');
   userId = helpers.validateUserId(userId);
   password = helpers.validatePassword(password);
-  role = helpers.validateRole(role);
 
   const userCollection = await users();
   let exists = await userCollection.findOne({userId: userId});
@@ -38,7 +37,6 @@ export const register = async (
     lastName: lastName,
     userId: userId,
     password: hashedPass,
-    role: role,
     signupDate: signupDate,
     lastLogin: "",
     schedules: {
@@ -48,7 +46,7 @@ export const register = async (
       //groupFreeTime: [], commenting this out since we said it would be hidden in user collection
       userFreeTime: []
     },
-    stats: []
+    groups: {} //an object to store key-value pairings of (PIN : name) for each group that the user is a part of
   };
   const insertInfo = await userCollection.insertOne(newUser);
   if (!insertInfo.acknowledged || !insertInfo.insertedId) {throw 'Could not add user';}
@@ -91,7 +89,6 @@ export const login = async (userId, password) => {
     firstName: user.firstName,
     lastName: user.lastName,
     userId: user.userId,
-    role: user.role,
     signupDate: user.signupDate,
     lastLogin: lastLogin
   };
@@ -173,10 +170,29 @@ export const addEvents = async (userId, event) => {
     endDate: endDate,
     description: event.description
   };
+
+  //add event to schedule, calculate userFreeTime
+  let totalUserEvents = user.schedules.events.concat(newEvent);
   await userCollection.updateOne(
     {_id: user._id},
-    {$push: {"schedules.events": newEvent}}
+    {$push: {"schedules.events": newEvent},
+     $set: {"schedules.userFreeTime": helpers.createFreeIntervals(totalUserEvents)}}
   );
+
+  //updating groupFreeTime
+  const groupCollection = await groups();
+  let totalGroupEvents = [];
+  for(let groupPIN of Object.keys(user.groups).map(Number)) {
+    let group = await searchGroupById(groupPIN);
+    for(let member of group.members) {
+      let currMember = await getUserById(member);
+      totalGroupEvents = totalGroupEvents.concat(currMember.schedules.events);
+    }
+    const updateGroup = await groupCollection.updateOne(
+      { PIN: groupPIN },
+      { $set: { "schedule.groupFreeTime": helpers.createFreeIntervals(totalGroupEvents) }}
+    );
+  }
 
   return newEvent;
 }
@@ -298,8 +314,8 @@ export const addTasks = async (userId, task) => {
     _id: new ObjectId(),
     assignedUsers: task.assignedUsers,
     progress: task.progress,
-    startDate: task.startDate,
-    endDate: task.endDate,
+    startDate: startDate,
+    endDate: startDate,
     startTime: task.startTime,
     endTime: task.endTime,
     urgencyLevel: task.urgencyLevel,

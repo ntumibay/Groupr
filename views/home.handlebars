@@ -4,17 +4,17 @@
 
     {{#if user}}
         {{#if (eq user.role 'administrator')}}
-            <a id="userlink" href="/user">User Page</a>
+            <a id="userlink" href="/user/{{user.userId}}">User Page</a>
             <a id="superuserlink" href="/superuser">Super User Page</a>
         {{else}}
             <a id="userlink" href="/user">User Page</a>
         {{/if}}
     {{else}}
-        <a id="signuplink" href="/register">Register Here</a>
+        <a id="signuplink" href="/registerUser">Register User Here</a>
         <a id="loginlink" href="/login">Login Here</a>
     {{/if}}
 
     <footer>
-        <p>Sean Bautista 20024647</p>
+        <p>Groupr</p>
     </footer>
 </main>
