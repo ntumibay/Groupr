@@ -3,7 +3,7 @@ import { users, groups } from "../config/mongoCollections.js";
 import * as helpers from "../helpers.js";
 import bcrypt from "bcrypt";
 import {ObjectId} from "mongodb";
-import { searchGroupById } from "./group.js";
+import { searchGroupById, addMember } from "./group.js";
 
 const saltRounds = 8;
 
@@ -345,4 +345,26 @@ export const getUserById = async (userId) => {
       {_id: 0, password: 0}
     }
     );
+}
+
+export const joinGroup = async (groupName, groupPIN, userId) =>{
+  const groupCollection = await groups();
+  const userCollection = await users();
+  userId = helpers.validateUserId(userId);
+  groupName = helpers.validateStringInput(groupName).toLowerCase();
+  let group = await searchGroupById(groupPIN);
+  if (!group || groupName!==group.name){
+    throw "Error: Could not find group";
+  }
+
+  let user = await userCollection.findOne({userId: userId});
+  if (!user){
+    throw "Error: There is no user with this ID.";
+  }
+
+  if (group.members.includes(userId)){
+    throw "Error: This user is already in the group.";
+  }
+
+  return addMember(userId, groupPIN);
 }

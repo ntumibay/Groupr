@@ -13,7 +13,7 @@ export const createGroup = async (groupName, userId, pin) => {
     }
 
     //validate inputs
-    groupName = helpers.validateStringInput(groupName, "Group Name");
+    groupName = helpers.validateStringInput(groupName, "Group Name").toLowerCase();
     userId = helpers.validateUserId(userId);
     pin = helpers.validatePIN(pin);
     
