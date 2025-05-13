@@ -249,23 +249,25 @@ router
     //code here for GET --> j render userProfile
     let currUser = req.session.user;
     let fullName = currUser.firstName + " " + currUser.lastName;
+    let groups = currUser.groups
     return res.status(200).render('userProfile', {
       userId: currUser.userId,
       fullName: fullName,
       events: currUser.schedules.events,
       tasks: currUser.schedules.tasks,
       errors: false,
-      groups: currUser.groups
+      groups
     });
   })
   .post(async (req, res) => {
-    const formType = req.body.submitButton;//value is either event or task
+    const formType = req.body.submitButton;//value is either event or task or joinGroup
     const body = req.body;
     let currUser = req.session.user;
     let fullName = currUser.firstName + " " + currUser.lastName;
     let combinedStartDate = `${body.startDate}T${body.startTime}`;
     let combinedEndDate = `${body.endDate}T${body.endTime}`;
-
+    let pinToJoin = parseInt(body.pinToJoin,10);
+    let groupNameToJoin = body.groupNameToJoin;
     if (formType === 'event') {
       // handle event form submission
       //so call addEvent with userId and event data
@@ -312,6 +314,26 @@ router
         return res.status(200).redirect(`/user/${req.session.user.userId}`);
       }
       catch (e) {
+        return res.status(404).render('userProfile', {
+          userId: currUser.userId,
+          fullName: fullName,
+          events: currUser.schedules.events,
+          tasks: currUser.schedules.tasks,
+          errors: true,
+          errorMessage: e.toString(),
+          groups: currUser.groups
+        });
+      }
+    } else if (formType === 'joinGroup') {
+      try {
+        await userFuncs.joinGroup(groupNameToJoin.trim(), pinToJoin, req.session.user.userId);
+    
+        // 🛠️ Refetch user from DB after joining the group
+        const updatedUser = await userFuncs.getUserById(req.session.user.userId);
+        req.session.user = updatedUser;
+    
+        return res.status(200).redirect(`/user/${req.session.user.userId}`);
+      } catch (e) {
         return res.status(404).render('userProfile', {
           userId: currUser.userId,
           fullName: fullName,
