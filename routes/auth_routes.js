@@ -136,10 +136,7 @@ router
         if (!result.registrationCompleted) {
           throw { code: 500, error: "Registration failed - please try again" };
         }
-        let group = await groupFuncs.searchGroupById(PIN);
-        return res.render(`group`, {
-          group
-        });
+        return res.redirect(`/group/${PIN}`);
       } catch (e) {
         return res.status(400).render('registerGroup', {
           errors: true,
@@ -335,7 +332,8 @@ router
 
 router.route('/group/:PIN').get(async (req,res) => {
   let currUser = req.session.user;
-  let group = currUser.group;
+  let PIN = parseInt(req.params.PIN, 10);
+  let group = await groupFuncs.searchGroupById(PIN);
   let isAdmin = group.administrativeMembers.includes(currUser.userId);
 
   return res.status(200).render('group', {

@@ -4,7 +4,7 @@ import * as helpers from "../helpers.js";
 import bcrypt from "bcrypt";
 import {ObjectId} from "mongodb";
 
-const saltRounds = 16;
+const saltRounds = 8;
 
 export const register = async (
   firstName,
