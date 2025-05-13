@@ -464,3 +464,32 @@ export const updateProgress = async (groupPIN, taskId, newProgress, userId) => {
     const updatedTask = updatedGroup.schedule.tasks.find(t => t._id.toString() === taskId);
     return updatedTask;
 };
+
+export const viewUserSchedules = async (groupPIN) => {
+  if (!groupPIN){
+        throw "Error: Group PIN must be provided";
+      }
+      groupPIN = helpers.validatePIN(groupPIN);
+
+      const groupCollection = await groups();
+      const userCollection = await users();
+
+      const group = await groupCollection.findOne({PIN: groupPIN});
+      if (!group){
+        throw "The Group PIN is invalid";
+      }
+
+      let schedules = [];
+      for(let member of group.members) {
+        let currMember = await userCollection.findOne({userId: member});
+        schedules.push({
+          member: currMember.userId,
+          events: currMember.schedules.events,
+          tasks: currMember.schedules.tasks,
+          freeTime: currMember.schedules.userFreeTime
+        });
+
+      }
+
+      return schedules;
+}

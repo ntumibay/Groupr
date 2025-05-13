@@ -62,7 +62,7 @@ import configRoutes from './routes/index.js';
 import * as helpers from "./helpers.js";
 
 import { register, login, addEvents, addTasks, getUserById } from "./data/users.js";
-import { createGroup, assignAdmin, addMember, groupAddEvents, groupAddTasks, searchGroupById, updateProgress } from './data/group.js';
+import { createGroup, assignAdmin, addMember, groupAddEvents, groupAddTasks, searchGroupById, updateProgress, viewUserSchedules } from './data/group.js';
 import {dbConnection, closeConnection } from './config/mongoConnection.js';
 
 const app = express();
@@ -446,8 +446,9 @@ async function populate_database() {
 }
 
 
-async function main() {
-  await populate_database();
-}
+// async function main() {
+//   // await populate_database();
+//   console.log(await viewUserSchedules(123456));
+// }
 
-//await main();
+// await main();
