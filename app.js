@@ -450,4 +450,4 @@ async function main() {
   await populate_database();
 }
 
-main();
+//await main();
