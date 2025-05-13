@@ -232,9 +232,13 @@ export const groupAddEvents = async (groupPIN, event) => {
     endDate: endDate,
     description: event.description
   };
+
+  let groupTotalEvents = group.schedule.events.concat(newEvent);
+
   await groupCollection.updateOne(
     {_id: group._id},
-    {$push: {"schedule.events": newEvent}}
+    {$push: {"schedule.events": newEvent},
+     $set: {"schedule.groupFreeTime": helpers.createFreeIntervals(groupTotalEvents)}}
   );
 
   if (!Array.isArray(group.members) || group.members.length==0){
@@ -245,9 +249,11 @@ export const groupAddEvents = async (groupPIN, event) => {
   const updateResults = await Promise.allSettled(
     group.members.map(async (memberId) => {
       try {
+        let totalEvents = groupTotalEvents.concat(userExists.schedules.events);
         const result = await userCollection.updateOne(
           { userId: memberId }, 
-          { $push: { "schedules.events": newEvent } }
+          { $push: { "schedules.events": newEvent },
+            $set: { "schedules.userFreeTime": helpers.createFreeIntervals(totalEvents)} }
         );
         if (result.modifiedCount === 0) {
           throw `User ${memberId} not updated (possibly not found)`;
@@ -290,7 +296,6 @@ export const groupAddTasks = async (groupPIN, task) => {
     throw "Error: progress must be either 'not started', 'in progress', or 'finished'";
   }
 
-
   //check that startDate and endDate are strings
   if (!task.startDate || typeof task.startDate !== 'string'){
     throw "Error: startDate must be a string";
@@ -329,9 +334,7 @@ export const groupAddTasks = async (groupPIN, task) => {
     throw "Error: description cannot be empty";
   }
  
-
   //getting here implies task is valid. now add to user's schedule subdocument
-
 
   const groupCollection = await groups();
   const group = await groupCollection.findOne({PIN: groupPIN});

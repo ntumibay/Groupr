@@ -307,7 +307,7 @@ async function populate_database() {
     console.log(await groupAddEvents(123456, {
       title: "Testing groupAddEvents",
       startDate: "2025-05-10T12:30",
-      endDate: "2025-05-10T14:00",
+      endDate: "2025-05-10T16:00",
       description: "Weekly team sync-up"
     }
     ));
