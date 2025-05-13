@@ -254,7 +254,8 @@ router
       fullName: fullName,
       events: currUser.schedules.events,
       tasks: currUser.schedules.tasks,
-      errors: false
+      errors: false,
+      groups: currUser.groups
     });
   })
   .post(async (req, res) => {
@@ -287,7 +288,8 @@ router
           events: currUser.schedules.events,
           tasks: currUser.schedules.tasks,
           errors: true,
-          errorMessage: e.toString()
+          errorMessage: e.toString(),
+          groups: currUser.groups
         });
       }
       
@@ -316,7 +318,8 @@ router
           events: currUser.schedules.events,
           tasks: currUser.schedules.tasks,
           errors: true,
-          errorMessage: e.toString()
+          errorMessage: e.toString(),
+          groups: currUser.groups
         });
       }
     } else {
@@ -327,7 +330,8 @@ router
         events: currUser.schedules.events,
         tasks: currUser.schedules.tasks,
         errors: true,
-        errorMessage: 'Unknown form type'
+        errorMessage: 'Unknown form type',
+        groups: currUser.groups
       });
     }
   });
@@ -364,8 +368,8 @@ router.route('/group/:PIN').get(async (req,res) => {
     
     try {
       await groupFuncs.groupAddEvents(group.PIN, eventData);
-      /*let currUser = await userFuncs.getUserById(req.session.user.userId);
-      req.session.user = currUser;*/
+      let currUser = await userFuncs.getUserById(req.session.user.userId);
+      req.session.user = currUser;
       return res.status(200).redirect(`/group/${group.PIN}`);
     }
     catch (e) {
@@ -379,9 +383,21 @@ router.route('/group/:PIN').get(async (req,res) => {
     
   } else if (formType === 'task') {
     // handle task form submission
+    let assignedUsers;
+    
+    if (typeof body.assignedUsers === 'string') {
+        // Split comma-separated string into array and trim whitespace
+        assignedUsers = body.assignedUsers.split(',').map(user => user.trim());
+    } else if (Array.isArray(body.assignedUsers)) {
+        // Use array directly if already in array format
+        assignedUsers = body.assignedUsers;
+    } else {
+        // Default to empty array if invalid format
+        assignedUsers = [];
+    }
     const taskData = {
       progress: decodeURIComponent(body.progress.replace(/\+/g, ' ')), 
-      assignedUsers: [],
+      assignedUsers: assignedUsers,
       startDate: body.startDate,
       endDate: body.endDate,
       urgencyLevel: Number(body.urgencyLevel),
@@ -389,6 +405,8 @@ router.route('/group/:PIN').get(async (req,res) => {
     };
     try {
       await groupFuncs.groupAddTasks(group.PIN, taskData);
+      let currUser = await userFuncs.getUserById(req.session.user.userId);
+      req.session.user = currUser;
       return res.status(200).redirect(`/group/${group.PIN}`);
     }
     catch (e) {
