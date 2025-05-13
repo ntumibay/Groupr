@@ -64,3 +64,23 @@ a:hover {
     color: var(--user-link-hover, #606f7e);
 }
 
+.hidden {
+    display: none;
+}
+
+.member-header {
+    cursor: pointer;
+    background-color: #f0f0f0;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.member-header:hover {
+    background-color: #e0e0e0;
+}
+
+.member-details {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}

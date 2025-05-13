@@ -17,39 +17,41 @@
                 <li>{{this}}</li>
             </ul>
         {{/each}}
-    <h2>Group Events</h2>
-            {{#each group.schedule.events}}
-                <h3>{{this.title}}</h3>
-                <ul>
-                    <li>Start Date: {{this.startDate}}</li>
-                    <li>End Date: {{this.endDate}}</li>
-                </ul>
-                <p>Description: {{this.description}}</p>
-            {{/each}}
-
-        <h2>Tasks</h2>
-            {{#each group.schedule.tasks}}
-                <h3>Task {{inc @index}}</h3>
-                <ul>
-                    <li>Progress: {{this.progress}}</li>
-                    <li>Start Date: {{this.startDate}}</li>
-                    <li>End Date: {{this.endDate}}</li>
-                    <li>Urgency Level: {{this.urgencyLevel}}</li>
-                    {{#each group.schedule.tasks.assignedUsers}}
+    <h2>Member Schedules</h2>
+        {{#each groupSchedules}}
+            <div class="member-schedule">
+                <div class="member-header" onclick="toggleSchedule(this)">
+                    <h3>{{this.member}}</h3>
+                </div>
+                <div class="member-details hidden">
+                    <h4>Events:</h4>
+                    {{#each this.events}}
                         <ul>
-                            <li>{{this}}</li>
+                            <li>Title: {{this.title}}</li>
+                            <li>Start Date: {{this.startDate}}</li>
+                            <li>End Date: {{this.endDate}}</li>
                         </ul>
                     {{/each}}
-                </ul>
-                <p>Description: {{this.description}}</p>
-            {{/each}}
-        <h2>Group Free Time</h2>
-            {{#each group.schedule.groupFreeTime}}
-                <ul>
-                    <li>Start Date: {{this.startDate}}</li>
-                    <li>End Date: {{this.endDate}}</li>
-                </ul>
-            {{/each}}
+
+                    <h4>Tasks:</h4>
+                    {{#each this.tasks}}
+                        <ul>
+                            <li>Description: {{this.description}}</li>
+                            <li>Start Date: {{this.startDate}}</li>
+                            <li>End Date: {{this.endDate}}</li>
+                        </ul>
+                    {{/each}}
+
+                    <h4>Free Time:</h4>
+                    {{#each this.freeTime}}
+                        <ul>
+                            <li>Start Date: {{this.startDate}}</li>
+                            <li>End Date: {{this.endDate}}</li>
+                        </ul>
+                    {{/each}}
+                </div>
+            </div>
+        {{/each}}
     </div>
     {{#if isAdmin}}
     <div class="eventTaskForms">
@@ -175,4 +177,10 @@
     </div>
     {{/if}}
     <a href="/user/{{user.userId}}">Back to User Page</a>
+    <script>
+        function toggleSchedule(headerElement) {
+            const details = headerElement.nextElementSibling;
+            details.classList.toggle('hidden');
+        }
+    </script>
 </main>
