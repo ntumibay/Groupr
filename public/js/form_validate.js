@@ -566,3 +566,27 @@ if (addAdminForm) {
         }
     });
 }
+
+let joinGroupForm = document.getElementById("joinGroupForm");
+if (joinGroupForm) {
+    joinGroupForm.addEventListener("submit", (event) => {
+        let pinToJoin = parseInt(joinGroupForm.elements["pinToJoin"].value, 10);
+        let groupNameToJoin = joinGroupForm.elements["groupNameToJoin"].value;
+        try {
+            validatePIN(pinToJoin);
+            validateStringInput(groupNameToJoin);
+            console.log("Join Group form validated!");
+        } catch (error) {
+            event.preventDefault();
+            // Check if error paragraph exists
+            let errorP = document.getElementById("error");
+            if (!errorP) {
+                errorP = document.createElement("p");
+                errorP.classList.add("error");
+                errorP.id = "error";
+                event.target.appendChild(errorP);
+            }
+            errorP.innerHTML = error.toString().replace("Error: ", "");
+        }
+    });
+}
