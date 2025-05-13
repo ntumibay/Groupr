@@ -17,6 +17,13 @@
                 <li>{{this}}</li>
             </ul>
         {{/each}}
+    <h2>Group Free Time</h2>
+            {{#each group.schedule.groupFreeTime}}
+                <ul>
+                    <li>Start Date: {{this.startDate}}</li>
+                    <li>End Date: {{this.endDate}}</li>
+                </ul>
+            {{/each}}
     <h2>Member Schedules</h2>
         {{#each groupSchedules}}
             <div class="member-schedule">
