@@ -191,251 +191,263 @@ app.listen(3000, () => {
 });
 
 
-//below checks functions work b4 creating routes
-// async function populate_database() {
-//   const db = await dbConnection();
-//   await db.dropDatabase();
-//   console.log(await register('Patrick',
-//        'Hill',  
-//        'graffixnyc',
-//        '@PainTurfs7',
-//       'administrator'));
+// below checks functions work b4 creating routes
+async function populate_database() {
+  const db = await dbConnection();
+  await db.dropDatabase();
+  console.log(await register('Patrick',
+       'Hill',  
+       'graffixnyc',
+       '@PainTurfs7',
+      'administrator'));
 
-//   console.log(await register("Sean", "Bautista", "teriya", "Projectko2!", "administrator"));
-//   try {
-//        console.log(await login("Samara", "@PainTurfs7"));
-//   } catch (err) {
-//        console.log(err.toString());
-//   }
-//   console.log();
-//   try {
-//        console.log(await login("GRAFFIXnyc", "@PainTurfs7"));
-//   } catch (err) {
-//        console.log(err.toString());
-//   }
+  console.log(await register("Sean", "Bautista", "teriya", "Projectko2!", "administrator"));
+  try {
+       console.log(await login("Samara", "@PainTurfs7"));
+  } catch (err) {
+       console.log(err.toString());
+  }
+  console.log();
+  try {
+       console.log(await login("GRAFFIXnyc", "@PainTurfs7"));
+  } catch (err) {
+       console.log(err.toString());
+  }
 
-//   try {
-//     console.log(await addTasks("teriya", {
-//       assignedUsers: ["teriya"], 
-//       progress: "not started", 
-//       startDate: "2025-05-13T12:30", 
-//       endDate: "2025-05-16T12:30",
-//       urgencyLevel: 5,
-//       description: "CS546 Final Project"
-//     }));
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    console.log(await addTasks("teriya", {
+      assignedUsers: ["teriya"], 
+      progress: "not started", 
+      startDate: "2025-05-13T12:30", 
+      endDate: "2025-05-16T12:30",
+      urgencyLevel: 5,
+      description: "CS546 Final Project"
+    }));
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   try {
-//     console.log(await createGroup("Group R", "graffixnyc", 123456));
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    console.log(await createGroup("Group R", "graffixnyc", 123456));
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   try {
-//     console.log(await createGroup("Not Group R", "graffixnyc", 123456));
-//   }
-//   catch (e){
-//     console.log(e);
-//   }
-//   try {
-//     console.log(await assignAdmin("graffixnyc", 123456));
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    console.log(await createGroup("Not Group R", "graffixnyc", 123456));
+  }
+  catch (e){
+    console.log(e);
+  }
+  try {
+    console.log(await assignAdmin("graffixnyc", 123456));
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   try {
-//     console.log(await addMember("teriya", 123456));
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    console.log(await addMember("teriya", 123456));
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   try {
-//     console.log(await assignAdmin("teriya", 123456));
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    console.log(await assignAdmin("teriya", 123456));
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   try {
-//     console.log(await groupAddTasks(123456, {
-//       assignedUsers: ["teriya"], 
-//       progress: "not started", 
-//       startDate: "2025-10-01T12:30", 
-//       endDate: "2025-12-01T12:30",
-//       urgencyLevel: 5,
-//       description: "CS546 Final Project"
-//     }));
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    console.log(await groupAddTasks(123456, {
+      assignedUsers: ["teriya"], 
+      progress: "not started", 
+      startDate: "2025-10-01T12:30", 
+      endDate: "2025-12-01T12:30",
+      urgencyLevel: 5,
+      description: "CS546 Final Project"
+    }));
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   try {
-//     console.log(await searchGroupById(123456));
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    console.log(await searchGroupById(123456));
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   try {
-//     console.log(await register('Vincent',
-//        'Penalosa',  
-//        'warachnid',
-//        '1Password!',
-//       'member'));
-//   } catch (e) {
-//     console.log(e);
-//   }
+  try {
+    console.log(await register('Vincent',
+       'Penalosa',  
+       'warachnid',
+       '1Password!',
+      'member'));
+  } catch (e) {
+    console.log(e);
+  }
 
-//   try {
-//     console.log(await register('Dominic',
-//        'Penalosa',  
-//        'derpysquid',
-//        '2Password!',
-//       'member'));
-//   } catch (e) {
-//     console.log(e);
-//   }
+  try {
+    console.log(await register('Dominic',
+       'Penalosa',  
+       'derpysquid',
+       '2Password!',
+      'member'));
+  } catch (e) {
+    console.log(e);
+  }
 
-  // try {
-  //   console.log(await groupAddEvents(123456, {
-  //     title: "Testing groupAddEvents",
-  //     startDate: "2025-05-10T12:30",
-  //     endDate: "2025-05-10T16:00",
-  //     description: "Weekly team sync-up"
-  //   }
-  //   ));
-  // }
-  // catch (e){
-  //   console.error(e);
-  // }
-//   try {
-//     console.log(await groupAddEvents(123456, {
-//       title: "Testing groupAddEvents",
-//       startDate: "2025-05-10T12:30",
-//       endDate: "2025-05-10T14:00",
-//       description: "Weekly team sync-up"
-//     }
-//     ));
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    console.log(await groupAddEvents(123456, {
+      title: "Testing groupAddEvents",
+      startDate: "2025-05-10T12:30",
+      endDate: "2025-05-10T16:00",
+      description: "Weekly team sync-up"
+    }
+    ));
+  }
+  catch (e){
+    console.error(e);
+  }
+  try {
+    console.log(await groupAddEvents(123456, {
+      title: "Testing groupAddEvents",
+      startDate: "2025-05-10T12:30",
+      endDate: "2025-05-10T14:00",
+      description: "Weekly team sync-up"
+    }
+    ));
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   const events1 = [
-//     {
-//       title: "Team Meeting",
-//       startDate: "2025-05-15T12:30",
-//       endDate: "2025-05-15T14:00",
-//       description: "Weekly team sync-up"
-//     },
-//     {
-//       title: "Office Hours",
-//       startDate: "2025-05-12T10:00",
-//       endDate: "2025-05-12T11:00",
-//       description: "Student office hours with TA"
-//     },
-//     {
-//       title: "Study Group",
-//       startDate: "2025-05-14T09:15",
-//       endDate: "2025-05-14T10:00",
-//       description: "Morning study group session"
-//     },
-//     {
-//       title: "Lab Session",
-//       startDate: "2025-05-13T18:00",
-//       endDate: "2025-05-13T19:00",
-//       description: "CS546 Lab on backend development"
-//     },
-//     {
-//       title: "Late Night Coding",
-//       startDate: "2025-05-17T00:30",
-//       endDate: "2025-05-17T02:00",
-//       description: "Group hackathon preparation"
-//     },
-//     {
-//       title: "Game Dev Sprint",
-//       startDate: "2025-05-16T22:00",
-//       endDate: "2025-05-17T01:00",
-//       description: "Late night game development sprint"
-//     }
-//   ];
+  const events1 = [
+    {
+      title: "Team Meeting",
+      startDate: "2025-05-15T12:30",
+      endDate: "2025-05-15T14:00",
+      description: "Weekly team sync-up"
+    },
+    {
+      title: "Office Hours",
+      startDate: "2025-05-12T10:00",
+      endDate: "2025-05-12T11:00",
+      description: "Student office hours with TA"
+    },
+    {
+      title: "Study Group",
+      startDate: "2025-05-14T09:15",
+      endDate: "2025-05-14T10:00",
+      description: "Morning study group session"
+    },
+    {
+      title: "Lab Session",
+      startDate: "2025-05-13T18:00",
+      endDate: "2025-05-13T19:00",
+      description: "CS546 Lab on backend development"
+    },
+    {
+      title: "Late Night Coding",
+      startDate: "2025-05-17T00:30",
+      endDate: "2025-05-17T02:00",
+      description: "Group hackathon preparation"
+    },
+    {
+      title: "Game Dev Sprint",
+      startDate: "2025-05-16T22:00",
+      endDate: "2025-05-17T01:00",
+      description: "Late night game development sprint"
+    }
+  ];
 
-//   let events2 = [
-//     {
-//       title: "Lecture Review",
-//       startDate: "2025-05-12T09:00",
-//       endDate: "2025-05-12T10:30",
-//       description: "Review session for CS coursework"
-//     },
-//     {
-//       title: "Overnight Server Maintenance",
-//       startDate: "2025-05-11T23:30",
-//       endDate: "2025-05-12T01:00",
-//       description: "Scheduled server maintenance"
-//     },
-//     {
-//       title: "Morning Gym",
-//       startDate: "2025-05-14T08:00",
-//       endDate: "2025-05-14T09:30",
-//       description: "Workout before class"
-//     },
-//     {
-//       title: "Lunch Meetup",
-//       startDate: "2025-05-15T12:00",
-//       endDate: "2025-05-15T13:00",
-//       description: "Quick lunch with classmates"
-//     }
-//   ];
+  let events2 = [
+    {
+      title: "Lecture Review",
+      startDate: "2025-05-12T09:00",
+      endDate: "2025-05-12T10:30",
+      description: "Review session for CS coursework"
+    },
+    {
+      title: "Overnight Server Maintenance",
+      startDate: "2025-05-11T23:30",
+      endDate: "2025-05-12T01:00",
+      description: "Scheduled server maintenance"
+    },
+    {
+      title: "Morning Gym",
+      startDate: "2025-05-14T08:00",
+      endDate: "2025-05-14T09:30",
+      description: "Workout before class"
+    },
+    {
+      title: "Lunch Meetup",
+      startDate: "2025-05-15T12:00",
+      endDate: "2025-05-15T13:00",
+      description: "Quick lunch with classmates"
+    }
+  ];
 
-//   for(let event of events1) {
-//     await addEvents("warachnid", event);
-//   }
+  for(let event of events1) {
+    await addEvents("warachnid", event);
+  }
 
-//   for(let event of events2) {
-//     await addEvents("derpysquid", event);
-//   }
+  for(let event of events2) {
+    await addEvents("derpysquid", event);
+  }
 
-//   await addMember("warachnid", 123456);
-//   await addMember("derpysquid", 123456);
+  await addMember("warachnid", 123456);
+  await addMember("derpysquid", 123456);
 
-//   try {
-//     let group = await searchGroupById(123456);
-//     await updateProgress(123456, group.schedule.tasks[0]._id, "FINISHED", "teriya");
-//   }
-//   catch (e){
-//     console.error(e);
-//   }
+  try {
+    await addEvents("teriya", {
+      title: "Soccer game",
+      startDate: "2025-05-11T12:00",
+      endDate: "2025-05-11T13:00",
+      description: "Ultra competitive elimination-based soccer tournament"
+    });
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   try {
-//     console.log(await groupAddTasks(123456, 
-//       {
-//       assignedUsers: ["teriya", 'graffixnyc', 'derpyquid', 'warachnid'], 
-//       progress: "not started", 
-//       startDate: "2025-09-11T12:30", 
-//       endDate: "2025-12-07T12:30",
-//       urgencyLevel: 5,
-//       description: "EVERYONE GET ON THIS"
-//     }
-//     ));
-//   }
-//   catch(e){
-//     console.error(e);
-//   }
+  try {
+    let group = await searchGroupById(123456);
+    await updateProgress(123456, group.schedule.tasks[0]._id, "FINISHED", "teriya");
+  }
+  catch (e){
+    console.error(e);
+  }
 
-//   await closeConnection();
-//   console.log('Done!');
-// }
+  try {
+    console.log(await groupAddTasks(123456, 
+      {
+      assignedUsers: ["teriya", 'graffixnyc', 'derpyquid', 'warachnid'], 
+      progress: "not started", 
+      startDate: "2025-09-11T12:30", 
+      endDate: "2025-12-07T12:30",
+      urgencyLevel: 5,
+      description: "EVERYONE GET ON THIS"
+    }
+    ));
+  }
+  catch(e){
+    console.error(e);
+  }
+
+  await closeConnection();
+  console.log('Done!');
+}
 
 
-// async function main() {
-//   await populate_database();
-// }
+async function main() {
+  await populate_database();
+}
 
-// main();
+main();

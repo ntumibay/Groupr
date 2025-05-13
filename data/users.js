@@ -1,8 +1,9 @@
 //import mongo collections, bcrypt and implement the following data functions
-import { users } from "../config/mongoCollections.js";
+import { users, groups } from "../config/mongoCollections.js";
 import * as helpers from "../helpers.js";
 import bcrypt from "bcrypt";
 import {ObjectId} from "mongodb";
+import { searchGroupById } from "./group.js";
 
 const saltRounds = 8;
 
@@ -170,12 +171,28 @@ export const addEvents = async (userId, event) => {
     description: event.description
   };
 
-  let totalEvents = user.schedules.events.concat(newEvent);
+  //add event to schedule, calculate userFreeTime
+  let totalUserEvents = user.schedules.events.concat(newEvent);
   await userCollection.updateOne(
     {_id: user._id},
     {$push: {"schedules.events": newEvent},
-     $set: {"schedules.userFreeTime": helpers.createFreeIntervals(totalEvents)}}
+     $set: {"schedules.userFreeTime": helpers.createFreeIntervals(totalUserEvents)}}
   );
+
+  //updating groupFreeTime
+  const groupCollection = await groups();
+  let totalGroupEvents = [];
+  for(let groupPIN of Object.keys(user.groups).map(Number)) {
+    let group = await searchGroupById(groupPIN);
+    for(let member of group.members) {
+      let currMember = await getUserById(member);
+      totalGroupEvents = totalGroupEvents.concat(currMember.schedules.events);
+    }
+    const updateGroup = await groupCollection.updateOne(
+      { PIN: groupPIN },
+      { $set: { "schedule.groupFreeTime": helpers.createFreeIntervals(totalGroupEvents) }}
+    );
+  }
 
   return newEvent;
 }
