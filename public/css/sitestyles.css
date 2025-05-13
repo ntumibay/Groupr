@@ -21,7 +21,7 @@ main {
 
 h1 {
     display: block;
-    text-align: left;
+    text-align: center;
     color: inherit; /* Inherits from body */
 }
 
@@ -39,6 +39,7 @@ button:hover {
 form > label {
     font-weight: bold; /* Changed from italic which isn't valid for weight */
     font-style: italic;
+    padding: 20px;
 }
 
 input[type=text] {
@@ -83,4 +84,27 @@ a:hover {
 .member-details {
     margin-left: 20px;
     margin-bottom: 15px;
+}
+
+.form-pair-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 50px; /* space between the forms */
+    margin-bottom: 2rem;
+    flex-wrap: wrap; /* allows stacking on smaller screens */
+  }
+  
+.event-form {
+    flex: 1;
+    max-width: 45%;
+    min-width: 300px;
+}
+
+.task-form {
+    flex: 1;
+    max-width: 40%;
+    min-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
 }
