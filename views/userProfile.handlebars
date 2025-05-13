@@ -88,6 +88,12 @@ and their tasks/events alr set up
         </form>
 
     </div>
+    <div id="groupListing">
+        <h2>Groups you're a part of:</h2>
+        {{#each groups}}
+            <li><a href="/group/{{@key}}">{{this}}</a></li>
+        {{/each}}
+    </div>
     <div id="createGroup">
         <a href="/registerGroup">Click here to create a group!</a>
     </div>

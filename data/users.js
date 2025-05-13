@@ -44,7 +44,8 @@ export const register = async (
       tasks: [],
       //groupFreeTime: [], commenting this out since we said it would be hidden in user collection
       userFreeTime: []
-    }
+    },
+    groups: {} //an object to store key-value pairings of (PIN : name) for each group that the user is a part of
   };
   const insertInfo = await userCollection.insertOne(newUser);
   if (!insertInfo.acknowledged || !insertInfo.insertedId) {throw 'Could not add user';}

@@ -254,7 +254,8 @@ router
       fullName: fullName,
       events: currUser.schedules.events,
       tasks: currUser.schedules.tasks,
-      errors: false
+      errors: false,
+      groups: currUser.groups
     });
   })
   .post(async (req, res) => {
@@ -287,7 +288,8 @@ router
           events: currUser.schedules.events,
           tasks: currUser.schedules.tasks,
           errors: true,
-          errorMessage: e.toString()
+          errorMessage: e.toString(),
+          groups: currUser.groups
         });
       }
       
@@ -316,7 +318,8 @@ router
           events: currUser.schedules.events,
           tasks: currUser.schedules.tasks,
           errors: true,
-          errorMessage: e.toString()
+          errorMessage: e.toString(),
+          groups: currUser.groups
         });
       }
     } else {
@@ -327,7 +330,8 @@ router
         events: currUser.schedules.events,
         tasks: currUser.schedules.tasks,
         errors: true,
-        errorMessage: 'Unknown form type'
+        errorMessage: 'Unknown form type',
+        groups: currUser.groups
       });
     }
   });
