@@ -16,22 +16,22 @@ export const createGroup = async (groupName, userId, pin) => {
     groupName = helpers.validateStringInput(groupName, "Group Name");
     userId = helpers.validateUserId(userId);
     pin = helpers.validatePIN(pin);
-
+    
     //groups can only be created by existing users
     if (!getUserById(userId)){
         throw "Error: Group founder must be an existing user.";
     }
 
-    //the user who creates the group will automatically be an administrative member
-    administrativeMembers.push(userId);
-    members.push(userId);
     const groupCollection = await groups();
-
     //each group should have a unique PIN
     let exists = await groupCollection.findOne({PIN: pin});
     if (exists){
         throw "Error: A group with this PIN number already exists.";
     }
+
+    //the user who creates the group will automatically be an administrative member
+    administrativeMembers.push(userId);
+    members.push(userId);
 
     const newGroup = {
         name: groupName,
@@ -50,6 +50,13 @@ export const createGroup = async (groupName, userId, pin) => {
     //add new group to the collection
     const insertInfo = await groupCollection.insertOne(newGroup);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) {throw 'Could not add group';}
+
+    //add group to current user's groups object
+    const userCollection = await users();
+    await userCollection.updateOne(
+      { userId: userId },
+      { $set: { [`groups.${pin}`]: groupName } }
+    );
     return {registrationCompleted: true};
 }
 
@@ -73,6 +80,10 @@ export const assignAdmin = async (userId, groupPIN) => {
     if (groupExists.members.includes(userId) && !groupExists.administrativeMembers.includes(userId)){
         await groupCollection.updateOne({PIN: groupPIN},
             {$push: {"administrativeMembers": userId}}
+        );
+        await userCollection.updateOne(
+          { userId: userId },
+          { $set: { [`groups.${groupPIN}`]: groupExists.name } }
         );
     }
     else {
@@ -147,7 +158,10 @@ export const addMember = async (userId, groupPIN) => {
         }
       }
     }
-    
+    await userCollection.updateOne(
+      { userId: userId },
+      { $set: { [`groups.${groupPIN}`]: groupExists.name } }
+    );
     return { success: true };
 }
 
