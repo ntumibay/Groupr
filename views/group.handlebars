@@ -30,6 +30,9 @@
                     <li>Start Date: {{this.startDate}}</li>
                     <li>End Date: {{this.endDate}}</li>
                     <li>Urgency Level: {{this.urgencyLevel}}</li>
+                    {{#each group.schedule.tasks.assignedUsers}}
+                        <li>{{this}}</li>
+                    {{/each}}
                 </ul>
                 <p>Description: {{this.description}}</p>
             {{/each}}

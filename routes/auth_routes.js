@@ -383,9 +383,21 @@ router.route('/group/:PIN').get(async (req,res) => {
     
   } else if (formType === 'task') {
     // handle task form submission
+    let assignedUsers;
+    
+    if (typeof body.assignedUsers === 'string') {
+        // Split comma-separated string into array and trim whitespace
+        assignedUsers = body.assignedUsers.split(',').map(user => user.trim());
+    } else if (Array.isArray(body.assignedUsers)) {
+        // Use array directly if already in array format
+        assignedUsers = body.assignedUsers;
+    } else {
+        // Default to empty array if invalid format
+        assignedUsers = [];
+    }
     const taskData = {
       progress: decodeURIComponent(body.progress.replace(/\+/g, ' ')), 
-      assignedUsers: [req.body.assignedUsers],
+      assignedUsers: assignedUsers,
       startDate: body.startDate,
       endDate: body.endDate,
       urgencyLevel: Number(body.urgencyLevel),
