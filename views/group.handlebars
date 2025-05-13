@@ -6,11 +6,16 @@
         {{/if}}
         <h2>Members:</h2>
         {{#each group.members}}
-            <li>{{this}}</li>
+            <ul>
+                <li>{{this}}</li>
+            </ul>
+            
         {{/each}}
     <h2>Administrative Members:</h2>
         {{#each group.administrativeMembers}}
-            <li>{{this}}</li>
+            <ul>
+                <li>{{this}}</li>
+            </ul>
         {{/each}}
     <h2>Group Events</h2>
             {{#each group.schedule.events}}
@@ -31,7 +36,9 @@
                     <li>End Date: {{this.endDate}}</li>
                     <li>Urgency Level: {{this.urgencyLevel}}</li>
                     {{#each group.schedule.tasks.assignedUsers}}
-                        <li>{{this}}</li>
+                        <ul>
+                            <li>{{this}}</li>
+                        </ul>
                     {{/each}}
                 </ul>
                 <p>Description: {{this.description}}</p>
@@ -61,24 +68,24 @@
         <!-- Date row -->
         <div class="form-row">
             <div class="form-group">
-            <label for="startDate">Start Date:</label>
-            <input name="startDate" id="startDate" type="date" required>
+            <label for="eventStartDate">Start Date:</label>
+            <input name="startDate" id="eventStartDate" type="date" required>
             </div>
             <div class="form-group">
-            <label for="endDate">End Date:</label>
-            <input name="endDate" id="endDate" type="date" required>
+            <label for="eventEndDate">End Date:</label>
+            <input name="endDate" id="eventEndDate" type="date" required>
             </div>
         </div>
         
         <!-- Time row -->
         <div class="form-row">
             <div class="form-group">
-            <label for="startTime">Start Time:</label>
-            <input name="startTime" id="startTime" type="time" required>
+            <label for="eventStartTime">Start Time:</label>
+            <input name="startTime" id="eventStartTime" type="time" required>
             </div>
             <div class="form-group">
-            <label for="endTime">End Time:</label>
-            <input name="endTime" id="endTime" type="time" required>
+            <label for="eventEndTime">End Time:</label>
+            <input name="endTime" id="eventEndTime" type="time" required>
             </div>
         </div>
         
@@ -88,7 +95,7 @@
             <textarea name="eventDescription" id="eventDescription"></textarea>
         </div>
         
-        <button name="submitButton" id="submitButton" type="submit" value="event">Add Event</button>
+        <button name="submitButton" id="submitButtonEvent" type="submit" value="event">Add Event</button>
         </form>
         <form method="POST" action="/group/{{group.PIN}}" id="groupTaskForm" class="task-form">
         <h2>Add Task</h2>
@@ -97,6 +104,7 @@
         <div class="form-row">
             <label for="progress">Progress:</label>
             <select name="progress" id="progress" required>
+            <option value="" disabled selected>Select Progress</option>
             <option value="not started">Not Started</option>
             <option value="in progress">In Progress</option>
             <option value="finished">Finished</option>
@@ -106,24 +114,24 @@
         <!-- Date row -->
         <div class="form-row">
             <div class="form-group">
-            <label for="startDate">Start Date:</label>
-            <input name="startDate" id="startDate" type="date" required>
+            <label for="taskStartDate">Start Date:</label>
+            <input name="startDate" id="taskStartDate" type="date" required>
             </div>
             <div class="form-group">
-            <label for="endDate">End Date:</label>
-            <input name="endDate" id="endDate" type="date" required>
+            <label for="taskEndDate">End Date:</label>
+            <input name="endDate" id="taskEndDate" type="date" required>
             </div>
         </div>
         
         <!-- Time row -->
         <div class="form-row">
             <div class="form-group">
-            <label for="startTime">Start Time:</label>
-            <input name="startTime" id="startTime" type="time" required>
+            <label for="taskStartTime">Start Time:</label>
+            <input name="startTime" id="taskStartTime" type="time" required>
             </div>
             <div class="form-group">
-            <label for="endTime">End Time:</label>
-            <input name="endTime" id="endTime" type="time" required>
+            <label for="taskEndTime">End Time:</label>
+            <input name="endTime" id="taskEndTime" type="time" required>
             </div>
         </div>
         
@@ -154,15 +162,15 @@
 
         <form method="POST" action="/group/{{group.PIN}}" id="addMember">
             <h2>Add Member</h2>
-            <label for="userId">User ID:</label>
-            <input name="userId" id="userId" type="text" required>
-            <button name="submitButton" id="submitButton" type="submit" value="member">Add Member</button>
+            <label for="memberUserId">User ID:</label>
+            <input name="userId" id="memberUserId" type="text" required>
+            <button name="submitButton" id="submitButtonMember" type="submit" value="member">Add Member</button>
         </form>
         <form method="POST" action="/group/{{group.PIN}}" id="addAdmin">
             <h2>Add Member to Administration</h2>
-            <label for="userId">User ID:</label>
-            <input name="userId" id="userId" type="text" required>
-            <button name="submitButton" id="submitButton" type="submit" value="admin">Add Administrator</button>
+            <label for="adminUserId">User ID:</label>
+            <input name="userId" id="adminUserId" type="text" required>
+            <button name="submitButton" id="submitButtonAdmin" type="submit" value="admin">Add Administrator</button>
         </form>
     </div>
     {{/if}}
