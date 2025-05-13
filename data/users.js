@@ -10,10 +10,9 @@ export const register = async (
   firstName,
   lastName,
   userId,
-  password,
-  role
+  password
 ) => {
-  if (!firstName || !lastName || !userId || !password || !role){
+  if (!firstName || !lastName || !userId || !password){
     throw "Error: All fields must be supplied";
   }
 
@@ -21,7 +20,6 @@ export const register = async (
   lastName = helpers.validateName(lastName, 'Last name');
   userId = helpers.validateUserId(userId);
   password = helpers.validatePassword(password);
-  role = helpers.validateRole(role);
 
   const userCollection = await users();
   let exists = await userCollection.findOne({userId: userId});
@@ -38,7 +36,6 @@ export const register = async (
     lastName: lastName,
     userId: userId,
     password: hashedPass,
-    role: role,
     signupDate: signupDate,
     lastLogin: "",
     schedules: {
@@ -47,8 +44,7 @@ export const register = async (
       tasks: [],
       //groupFreeTime: [], commenting this out since we said it would be hidden in user collection
       userFreeTime: []
-    },
-    stats: []
+    }
   };
   const insertInfo = await userCollection.insertOne(newUser);
   if (!insertInfo.acknowledged || !insertInfo.insertedId) {throw 'Could not add user';}
@@ -91,7 +87,6 @@ export const login = async (userId, password) => {
     firstName: user.firstName,
     lastName: user.lastName,
     userId: user.userId,
-    role: user.role,
     signupDate: user.signupDate,
     lastLogin: lastLogin
   };
