@@ -79,5 +79,111 @@ catch(e){
     console.error(e);
 }
 
+try {
+    console.log(await groupFunc.addMember("nickname", 654321));
+}
+catch(e){
+    console.error(e);
+}
+
+try {
+    console.log(await groupFunc.addMember("warachnid", 123456));
+}
+catch(e){
+    console.error(e);
+}
+
+try {
+    console.log(await groupFunc.groupAddEvents(123456,
+    {
+      title: "Testing groupAddEvents",
+      startDate: "2025-05-10T12:30",
+      endDate: "2025-05-10T16:00",
+      description: "Weekly team sync-up"
+    }
+    ));
+}
+catch(e){
+    console.error(e);
+}
+
+try {
+    console.log(await groupFunc.groupAddEvents(654321,
+    {
+      title: "Add event to cs546 group",
+      startDate: "2025-05-10T12:30",
+      endDate: "2025-05-10T16:00",
+      description: "Watch this"
+    }
+    ));
+}
+catch(e){
+    console.error(e);
+}
+
+try {
+    console.log(await groupFunc.groupAddTasks(123456, 
+        {
+      assignedUsers: ['warachnid'], 
+      progress: "not started", 
+      startDate: "2025-09-11T12:30", 
+      endDate: "2025-12-07T12:30",
+      urgencyLevel: 5,
+      description: "task for warachnid in group r"
+    }
+    ));
+}
+catch(e){
+    console.error(e);
+}
+
+try {
+    console.log(await groupFunc.groupAddTasks(123456, 
+        {
+      assignedUsers: ['teriya'], 
+      progress: "not started", 
+      startDate: "2025-09-11T12:30", 
+      endDate: "2025-12-07T12:30",
+      urgencyLevel: 5,
+      description: "task for teriya in group r"
+    }
+    ));
+}
+catch(e){
+    console.error(e);
+}
+
+try {
+    console.log(await groupFunc.groupAddTasks(654321, 
+        {
+      assignedUsers: ['graffixnyc'], 
+      progress: "not started", 
+      startDate: "2025-09-11T12:30", 
+      endDate: "2025-12-07T12:30",
+      urgencyLevel: 5,
+      description: "task for graffixnyc in cs546 group"
+    }
+    ));
+}
+catch(e){
+    console.error(e);
+}
+
+try {
+    console.log(await groupFunc.groupAddTasks(654321, 
+        {
+      assignedUsers: ['nickname'], 
+      progress: "not started", 
+      startDate: "2025-09-11T12:30", 
+      endDate: "2025-12-07T12:30",
+      urgencyLevel: 5,
+      description: "task for nickname in cs546 group"
+    }
+    ));
+}
+catch(e){
+    console.error(e);
+}
+
 // Close the database connection
 await closeConnection();
