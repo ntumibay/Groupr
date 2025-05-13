@@ -353,7 +353,7 @@ export const joinGroup = async (groupName, groupPIN, userId) =>{
   userId = helpers.validateUserId(userId);
   groupName = helpers.validateStringInput(groupName).toLowerCase();
   let group = await searchGroupById(groupPIN);
-  if (!group || groupName!==group.name){
+  if (!group || groupName!==group.name.toLowerCase()){
     throw "Error: Could not find group";
   }
 

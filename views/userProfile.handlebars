@@ -97,6 +97,16 @@ and their tasks/events alr set up
             </ul>
         {{/each}}
     </div>
+    <div id="groupJoining">
+        <form method="POST" action="/user/{{userId}}" id="joinGroupform">
+            <h2>Join Group</h2>
+            <label for="pinToJoin">Group PIN:</label>
+            <input name="pinToJoin" id="pinToJoin" type="number" required>
+            <label for="groupNameToJoin">Group Name:</label>
+            <input name="groupNameToJoin" id="groupNameToJoin" type="text" required>
+            <button name="submitButton" id="submitButton" type="submit" value="joinGroup">Join Group</button>
+        </form>
+    </div>
     <div id="createGroup">
         <a href="/registerGroup">Click here to create a group!</a>
     </div>
