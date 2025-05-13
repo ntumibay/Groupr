@@ -17,7 +17,7 @@ export const validateStringInput = (input, fieldName) => {
 export const validatePIN = (pin) => {
   if (!pin) throw "Error: PIN must be provided";
   if (!Number.isInteger(pin)) throw "Error: PIN must be an int";
-  let pStr = pin.toString();
+  let pStr = pin.toString().trim();
   if (!pinRegex.test(pStr)) throw "Error: PIN must be a positive, 6-digit integer";
   return pin;
 };
