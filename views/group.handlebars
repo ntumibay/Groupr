@@ -13,7 +13,7 @@
             <li>{{this}}</li>
         {{/each}}
     <h2>Group Events</h2>
-            {{#each group.events}}
+            {{#each group.schedule.events}}
                 <h3>{{this.title}}</h3>
                 <ul>
                     <li>Start Date: {{this.startDate}}</li>
@@ -23,7 +23,7 @@
             {{/each}}
 
         <h2>Tasks</h2>
-            {{#each group.tasks}}
+            {{#each group.schedule.tasks}}
                 <h3>Task {{inc @index}}</h3>
                 <ul>
                     <li>Progress: {{this.progress}}</li>
@@ -43,10 +43,13 @@
             <h2>Add Event</h2>
             <label for="eventTitle">Event Title:</label>
             <input name="eventTitle" id="eventTitle" type="text" required>
-            <label for="startDate">Start Date:</label>
-            <input name="startDate" id="startDate" type="date" required>
+           <input name="startDate" id="startDate" type="date" required>
             <label for="endDate">End Date:</label>
             <input name="endDate" id="endDate" type="date" required>
+            <label for="startTime">Start Time:</label>
+            <input name="startTime" id="startTime" type="time" required>
+            <label for="endTime">Start Time:</label>
+            <input name="endTime" id="endTime" type="time" required>
             <label for="eventDescription">Event Description:</label>
             <textarea name="eventDescription" id="eventDescription"></textarea>
             <button name="submitButton" id="submitButton" type="submit" value="event">Add Event</button>
@@ -61,10 +64,13 @@
                 <option value="in progress">In Progress</option>
                 <option value="finished">Finished</option>
             </select>
-            <label for="startDate">Start Date:</label>
             <input name="startDate" id="startDate" type="date" required>
             <label for="endDate">End Date:</label>
             <input name="endDate" id="endDate" type="date" required>
+            <label for="startTime">Start Time:</label>
+            <input name="startTime" id="startTime" type="time" required>
+            <label for="endTime">Start Time:</label>
+            <input name="endTime" id="endTime" type="time" required>
             <label for="urgencyLevel">Urgency Level:</label>
             <select name="urgencyLevel" id="urgencyLevel">
                 <option value="1">1 (Low)</option>

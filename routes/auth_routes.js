@@ -295,11 +295,13 @@ router
       
     } else if (formType === 'task') {
       // handle task form submission
+      let combinedStartDate = `${body.startDate}T${body.startTime}`;
+      let combinedEndDate = `${body.endDate}T${body.endTime}`;
       const taskData = {
         progress: decodeURIComponent(body.progress.replace(/\+/g, ' ')),
         assignedUsers: [],
-        startDate: body.startDate,
-        endDate: body.endDate,
+        startDate: combinedStartDate,
+        endDate: combinedEndDate,
         urgencyLevel: Number(body.urgencyLevel),
         description: body.taskDescription
       };
@@ -366,8 +368,8 @@ router.route('/group/:PIN').get(async (req,res) => {
     
     try {
       await groupFuncs.groupAddEvents(group.PIN, eventData);
-      /*let currUser = await userFuncs.getUserById(req.session.user.userId);
-      req.session.user = currUser;*/
+      let currUser = await userFuncs.getUserById(req.session.user.userId);
+      req.session.user = currUser;
       return res.status(200).redirect(`/group/${group.PIN}`);
     }
     catch (e) {
