@@ -423,11 +423,10 @@ export const updateProgress = async (groupPIN, taskId, newProgress, userId) => {
     const task = group.schedule.tasks.find(t => t._id.toString() === taskId);
     if (!task) throw "Error: Task not found";
 
-    //only admins/assignedUsers can update this
-    const isAdmin = group.administrativeMembers.includes(userId);
+    //only assigned users can update progress
     const isAssigned = task.assignedUsers.includes(userId);
     
-    if (!isAdmin && !isAssigned) {
+    if (!isAssigned) {
         throw "Error: User not authorized to update this task";
     }
 
