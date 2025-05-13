@@ -9,12 +9,12 @@ for the theme, you can simply read the themePreference for the user and inject i
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GroupR</title>
-    <link rel="stylesheet" href="/public/css/sitestyles.css">
+    <link rel="stylesheet" href="/css/sitestyles.css">
 </head>
 
 <body style="{{#if users}}background-color: {{{user.themePreference.backgroundColor}}}; color: {{{user.themePreference.fontColor}}};{{/if}}">
     {{{body}}}
-    <script src="/public/js/form_validate.js"></script>
+    <script src="/js/form_validate.js" type="module"></script>
 </body>
 </html>
 

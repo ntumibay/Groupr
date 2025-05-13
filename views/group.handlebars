@@ -45,11 +45,11 @@
             {{/each}}
     </div>
     {{#if isAdmin}}
-    <div id="eventTaskForms">
+    <div class="eventTaskForms">
         {{#if errors}}
             <p class="error">{{errorMessage}}</p>
         {{/if}}
-        <form method="POST" action="/group/{{group.PIN}}" id="eventForm">
+        <form method="POST" action="/group/{{group.PIN}}" id="groupEventForm">
             <h2>Add Event</h2>
             <label for="eventTitle">Event Title:</label>
             <input name="eventTitle" id="eventTitle" type="text" required>
@@ -64,7 +64,7 @@
             <textarea name="eventDescription" id="eventDescription"></textarea>
             <button name="submitButton" id="submitButton" type="submit" value="event">Add Event</button>
         </form>
-        <form method="POST" action="/group/{{group.PIN}}" id="taskForm">
+        <form method="POST" action="/group/{{group.PIN}}" id="groupTaskForm">
             <h2>Add Task</h2>
             <label for="taskDescription">Task Description:</label>
             <textarea name="taskDescription" id="taskDescription"></textarea>

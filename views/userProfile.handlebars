@@ -38,11 +38,11 @@ and their tasks/events alr set up
                 <p>Description: {{this.description}}</p>
             {{/each}}
     </div>
-    <div id="eventTaskForms">
+    <div class="eventTaskForms">
         {{#if errors}}
             <p class="error">{{errorMessage}}</p>
         {{/if}}
-        <form method="POST" action="/user/{{userId}}" id="eventForm">
+        <form method="POST" action="/user/{{userId}}" id="userEventForm">
             <h2>Add Event</h2>
             <label for="eventTitle">Event Title:</label>
             <input name="eventTitle" id="eventTitle" type="text" required>
@@ -58,7 +58,7 @@ and their tasks/events alr set up
             <textarea name="eventDescription" id="eventDescription"></textarea>
             <button name="submitButton" id="submitButton" type="submit" value="event">Add Event</button>
         </form>
-        <form method="POST" action="/user/{{userId}}" id="taskForm">
+        <form method="POST" action="/user/{{userId}}" id="userTaskForm">
             <h2>Add Task</h2>
             <label for="taskDescription">Task Description:</label>
             <textarea name="taskDescription" id="taskDescription"></textarea>
