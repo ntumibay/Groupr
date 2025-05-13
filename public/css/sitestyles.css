@@ -8,7 +8,7 @@ html {
 
 /* Base styles with theme variables */
 body {
-    font-family: fantasy, chalkduster;
+    font-family: 'Nunito', 'Segoe UI', 'Roboto', sans-serif;
     background-color: var(--user-bg-color, #99CCFF); /* Fallback to original */
     color: var(--user-text-color, #000000); /* Fallback to black */
     transition: background-color 0.3s, color 0.3s; /* Smooth theme switching */
