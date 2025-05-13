@@ -91,7 +91,7 @@ and their tasks/events alr set up
     <div id="groupListing">
         <h2>Groups you're a part of:</h2>
         {{#each groups}}
-            <li><a href="/group/{{@key}}">{{this}}</a></li>
+            <li><a href="/group/{{@key}}?admin={{isAdmin}}">{{this}}</a></li>
         {{/each}}
     </div>
     <div id="createGroup">
