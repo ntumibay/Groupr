@@ -381,7 +381,7 @@ router.route('/group/:PIN').get(async (req,res) => {
     // handle task form submission
     const taskData = {
       progress: decodeURIComponent(body.progress.replace(/\+/g, ' ')), 
-      assignedUsers: [],
+      assignedUsers: [req.body.assignedUsers],
       startDate: body.startDate,
       endDate: body.endDate,
       urgencyLevel: Number(body.urgencyLevel),
@@ -389,6 +389,8 @@ router.route('/group/:PIN').get(async (req,res) => {
     };
     try {
       await groupFuncs.groupAddTasks(group.PIN, taskData);
+      let currUser = await userFuncs.getUserById(req.session.user.userId);
+      req.session.user = currUser;
       return res.status(200).redirect(`/group/${group.PIN}`);
     }
     catch (e) {

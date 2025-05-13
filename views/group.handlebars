@@ -79,6 +79,8 @@
                 <option value="4">4 </option>
                 <option value="5">5 (High)</option>
             </select>
+            <label for="assignedUsers" id="assignedUsers" type="text" required>Assign Users</label>
+            <input name="assignedUsers" id="assignedUsers" type="text">
             <button name="submitButton" id="submitButton" type="submit" value="task">Add Task</button>
         </form>
         <form method="POST" action="/group/{{group.PIN}}" id="addMember">
