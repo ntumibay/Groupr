@@ -185,12 +185,12 @@ app.use('/user/:userid', (req, res, next) => {
 
 configRoutes(app);
 
-// app.listen(3000, () => {
-//     console.log("We've now got a server!");
-//     console.log('Your routes will be running on http://localhost:3000');
-// });
+app.listen(3000, () => {
+    console.log("We've now got a server!");
+    console.log('Your routes will be running on http://localhost:3000');
+});
 
-
+/*
 //below checks functions work b4 creating routes
 async function populate_database() {
   const db = await dbConnection();
@@ -431,4 +431,4 @@ async function main() {
   // console.log(group.schedule);
 }
 
-main();
+main();*/

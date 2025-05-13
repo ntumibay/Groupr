@@ -48,14 +48,12 @@ router
         let userId = regData.userId.trim();
         let password = regData.password.trim();
         let confirmPassword = regData.confirmPassword.trim();
-        let role = regData.role.trim();
         let missingFields = [];
         if (!firstName) missingFields.push('First Name');
         if (!lastName) missingFields.push('Last Name');
         if (!userId) missingFields.push('User ID');
         if (!password) missingFields.push('Password');
         if (!confirmPassword) missingFields.push('Confirmed Password');
-        if (!role) missingFields.push('role');
 
         if (missingFields.length>0){
             return res.status(400).render('registerUser', {errors: true, errorMessage: `${missingFields.toString()} must be filled`});
@@ -81,8 +79,7 @@ router
           firstName.trim(),
           lastName.trim(),
           userId.trim().toLowerCase(),
-          password,
-          role.toLowerCase()
+          password
         );
     
         if (!result.registrationCompleted) {
@@ -226,7 +223,6 @@ router.route('/user').get(async (req, res) => {
   let currUser = req.session.user;
   let t = new Date().toLocaleTimeString();
   let d = new Date().toLocaleDateString();
-  let suCheck = req.session.user && req.session.user.role==='administrator';
   return res.render('user', {users: true, firstName: currUser.firstName, lastName: currUser.lastName, currentTime: t, currentDate: d,
     role: currUser.role, signupDate: currUser.signupDate, lastLogin: currUser.lastLogin, user: currUser
   })
@@ -259,7 +255,6 @@ router
     return res.status(200).render('userProfile', {
       userId: currUser.userId,
       fullName: fullName,
-      role: currUser.role,
       events: currUser.schedules.events,
       tasks: currUser.schedules.tasks,
       errors: false
@@ -292,7 +287,6 @@ router
         return res.status(404).render('userProfile', {
           userId: currUser.userId,
           fullName: fullName,
-          role: currUser.role,
           events: currUser.schedules.events,
           tasks: currUser.schedules.tasks,
           errors: true,
@@ -320,7 +314,6 @@ router
         return res.status(404).render('userProfile', {
           userId: currUser.userId,
           fullName: fullName,
-          role: currUser.role,
           events: currUser.schedules.events,
           tasks: currUser.schedules.tasks,
           errors: true,
@@ -332,7 +325,6 @@ router
       return res.status(400).render('userProfile', {
         userId: currUser.userId,
         fullName: fullName,
-        role: currUser.role,
         events: currUser.schedules.events,
         tasks: currUser.schedules.tasks,
         errors: true,
@@ -344,7 +336,7 @@ router
 router.route('/group/:PIN').get(async (req,res) => {
   let currUser = req.session.user;
   let group = currUser.group;
-  let isAdmin = currUser.role == "administrator";
+  let isAdmin = group.administrativeMembers.includes(currUser.userId);
 
   return res.status(200).render('group', {
     isAdmin,
@@ -357,8 +349,7 @@ router.route('/group/:PIN').get(async (req,res) => {
   const body = req.body;
   let currUser = req.session.user;
   let group = currUser.group;
-  let isAdmin = currUser.role == "administrator";
-
+  let isAdmin = group.administrativeMembers.includes(currUser.userId);
   if (formType === 'event') {
     // handle event form submission
     //so call addEvent with userId and event data
@@ -368,6 +359,7 @@ router.route('/group/:PIN').get(async (req,res) => {
       startDate: body.startDate,
       endDate: body.endDate,
     };
+    
     try {
       await groupFuncs.groupAddEvents(group.PIN, eventData);
       /*let currUser = await userFuncs.getUserById(req.session.user.userId);
