@@ -1,0 +1,16 @@
+<main>
+    <header>
+        <h1>Register Group</h1>
+    </header>
+    <form method="POST" action="/registerGroup" id="signup-form">
+        <label for="Name">Group Name:</label>
+        <input name="name" id="name" type="text">
+        <label for="PIN">PIN:</label>
+        <input name="PIN" id="PIN" type="number">
+        {{#if errors}}
+            <p class="error">{{errorMessage}}</p>
+        {{/if}}
+        <button name="submitButton" id="submitButton" type="submit">Register Group</button>
+    </form>
+    <a href="/">Go Back to Home Page</a>
+</main>
