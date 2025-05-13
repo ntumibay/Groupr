@@ -1,8 +1,55 @@
 // In this file, you must perform all client-side validation for every single form input (and the role dropdown) on your pages. The constraints for those fields are the same as they are for the data functions and routes. Using client-side JS, you will intercept the form's submit event when the form is submitted and If there is an error in the user's input or they are missing fields, you will not allow the form to submit to the server and will display an error on the page to the user informing them of what was incorrect or missing.  You must do this for ALL fields for the register form as well as the login form. If the form being submitted has all valid data, then you will allow it to submit to the server for processing. Don't forget to check that password and confirm password match on the registration form!
 
 //import {validateUserEvent, validateUserTask} from './helper.js';
+const nameRegex = /^[a-zA-Z]{2,20}$/;
+const idRegex = /^[a-zA-Z0-9]{5,10}$/;
+const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+const pinRegex = /^[0-9]{6}$/;
 
-export const validateUserEvent = (event) => {
+// Helper functions
+const validateStringInput = (input, fieldName) => {
+  if (!input) throw `Error: ${fieldName} must be provided`;
+  if (typeof input !== 'string' || input.trim().length===0) throw `Error: ${fieldName} must be a non-empty string`;
+  return input.trim();
+};
+
+const validatePIN = (pin) => {
+  if (!pin) throw "Error: PIN must be provided";
+  if (!Number.isInteger(pin)) throw "Error: PIN must be an int";
+  let pStr = pin.toString();
+  if (!pinRegex.test(pStr)) throw "Error: PIN must be a positive, 6-digit integer";
+  return pin;
+};
+
+const validateName = (name, fieldName) => {
+    const trimmed = validateStringInput(name, fieldName);
+  if (!nameRegex.test(name)) {
+    throw `Error: ${fieldName} can only contain letters, and must be between 2 and 25 characters long`;
+  }
+  return name;
+};
+
+const validateUserId = (userId) => {
+    const trimmed = validateStringInput(userId, 'User ID').toLowerCase();
+  if (!idRegex.test(userId)) {
+    throw "Error: User ID can only contain letters and numbers, and must be between 5 and 10 characters long";
+  }
+  return trimmed;
+};
+
+const validatePassword = (password) => {
+    const trimmed = validateStringInput(password, 'Password');
+  if (!passwordRegex.test(password)) {
+    throw "Error: Password must contain at least one capital letter, one number, one special character, and must be at least 8 characters long";
+  }
+  if (password.includes(" ")) {
+    throw "Error: Password cannot contain spaces";
+  }
+  return trimmed;
+};
+
+const validateUserEvent = (event) => {
   if (!event){
     throw "Error: event must be provided";
   }
@@ -52,7 +99,7 @@ export const validateUserEvent = (event) => {
   }
 };
 
-export const validateUserTask = (task) => {
+const validateUserTask = (task) => {
   //below checks task. May be moves to helpers at later date
   if (typeof task != 'object') {throw "Error: task must be an object";}
   //make sure the only keys are title, startDate, endDate, description
@@ -256,106 +303,86 @@ const validateGroupTask = (task) => {
 };
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    //register
-    const registerForm = document.getElementById('signup-form');
-    if (registerForm) {
-        registerForm.addEventListener('submit', function(event) {
+
+let userSignupForm = document.getElementById("signup-form-user");
+if (userSignupForm) {
+    userSignupForm.addEventListener("submit", (event) => {
+        let firstName = userSignupForm.elements["firstName"].value;
+        let lastName = userSignupForm.elements["lastName"].value;
+        let userId = userSignupForm.elements["userId"].value;
+        let password = userSignupForm.elements["password"].value;
+        let confirmPassword = userSignupForm.elements["confirmPassword"].value;
+        try {
+          validateName(firstName, "First Name");
+          validateName(lastName, "Last Name");
+          validateUserId(userId);
+          validatePassword(password);
+          if (password !== confirmPassword) {
+            throw "Error: Passwords do not match";
+          }
+          console.log("Form submitted successfully!");
+        }
+        catch (error) {
             event.preventDefault();
-            clearErrors();
+            //check if error paragraph exists
+            let errorP = document.getElementById("error");
+            if (!errorP) {
+                errorP = document.createElement("p");
+                errorP.classList.add("error"); errorP.id = "error";
+                event.target.appendChild(errorP);
+            }
+            errorP.innerHTML = error.toString().replace("Error: ", "");
+        }
+    });
+}
 
-            const firstName = document.getElementById('firstName').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
-            const userId = document.getElementById('userId').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const favoriteQuote = document.getElementById('favoriteQuote').value.trim();
-            const backgroundColor = document.getElementById('backgroundColor').value;
-            const fontColor = document.getElementById('fontColor').value;
-            const role = document.getElementById('role').value;
-
-            let isValid = true;
-
-            if (!/^[a-zA-Z]{2,20}$/.test(firstName)) {
-                isValid = false;
-            }
-
-            if (!/^[a-zA-Z]{2,20}$/.test(lastName)) {
-                isValid = false;
-            }
-
-            if (!/^[a-zA-Z0-9]{5,10}$/.test(userId)) {
-                isValid = false;
-            }
-z
-            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[^\s]{8,}$/;
-            if (!passwordRegex.test(password)) {
-                isValid = false;
-            }
-
-            if (password !== confirmPassword) {
-                isValid = false;
-            }
-
-            if (favoriteQuote.length < 20 || favoriteQuote.length > 255) {
-                isValid = false;
-            }
-
-            if (!/^#[0-9A-Fa-f]{6}$/.test(backgroundColor)) {
-                isValid = false;
-            }
-            if (!/^#[0-9A-Fa-f]{6}$/.test(fontColor)) {
-                isValid = false;
-            }
-            if (backgroundColor === fontColor) {
-                isValid = false;
-            }
-
-            const hexRegex = /^#[0-9A-Fa-f]{6}$/i;
-            if (!hexRegex.test(backgroundColor)) {
-                showError('backgroundColor', 'Must be a valid hex color (#RRGGBB)');
-                isValid = false;
-            }
-            if (!hexRegex.test(fontColor)) {
-                showError('fontColor', 'Must be a valid hex color (#RRGGBB)');
-                isValid = false;
-            }
-
-            if (!['superuser', 'user'].includes(role.toLowerCase())) {
-                isValid = false;
-            }
-
-            if (isValid) {
-                registerForm.submit();
-            }
-        });
-    }
-
-    //login
-    const loginForm = document.getElementById('signin-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(event) {
+let userLoginForm = document.getElementById("signin-form");
+if (userLoginForm) {
+    userLoginForm.addEventListener("submit", (event) => {
+        let userId = userLoginForm.elements["userId"].value;
+        let password = userLoginForm.elements["password"].value;
+        try {
+            validateUserId(userId);
+            validatePassword(password);
+            console.log("Form submitted successfully!");
+        }
+        catch (error) {
             event.preventDefault();
-
-            const userId = document.getElementById('userId').value.trim();
-            const password = document.getElementById('password').value;
-            let isValid = true;
-
-            if (!/^[a-zA-Z0-9]{5,10}$/.test(userId)) {
-                isValid = false;
+            //check if error paragraph exists
+            let errorP = document.getElementById("error");
+            if (!errorP) {
+                errorP = document.createElement("p");
+                errorP.classList.add("error"); errorP.id = "error";
+                event.target.appendChild(errorP);
             }
+            errorP.innerHTML = error.toString().replace("Error: ", "");
+        }
+    });
+}
 
-            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[^\s]{8,}$/;
-            if (!passwordRegex.test(password)) {
-                isValid = false;
+let groupSignupForm = document.getElementById("signup-form-group");
+if (groupSignupForm) {
+    groupSignupForm.addEventListener("submit", (event) => {
+        let groupName = groupSignupForm.elements["name"].value;
+        let groupPin = groupSignupForm.elements["PIN"].value;
+        try {
+            validateStringInput(groupName, "Group Name");
+            validatePIN(Number(groupPin));
+            console.log("Form submitted successfully!");
+        }
+        catch (error) {
+            event.preventDefault();
+            //check if error paragraph exists
+            let errorP = document.getElementById("error");
+            if (!errorP) {
+                errorP = document.createElement("p");
+                errorP.classList.add("error"); errorP.id = "error";
+                event.target.appendChild(errorP);
             }
-
-            if (isValid) {
-                loginForm.submit();
-            }
-        });
-    }
-});
+            errorP.innerHTML = error.toString().replace("Error: ", "");
+        }
+    });
+}
 
 let userEventForm = document.getElementById("userEventForm");
 if (userEventForm) {
@@ -462,6 +489,7 @@ if (groupEventForm) {
         }
     });
 }
+
 let groupTaskForm = document.getElementById("groupTaskForm");
 if (groupTaskForm) {
     groupTaskForm.addEventListener("submit", (event) => {
@@ -470,16 +498,59 @@ if (groupTaskForm) {
         let startDate = groupTaskForm.elements["startDate"].value;
         let endDate = groupTaskForm.elements["endDate"].value;
         let urgencyLevel = groupTaskForm.elements["urgencyLevel"].value;
+        let assignedUsers = groupTaskForm.elements["assignedUsers"].value.split(",").map(user => user.trim());
         const taskData = {
         description: taskDescription,
         startDate: startDate,
         endDate: endDate,
         progress: progress,
         urgencyLevel: Number(urgencyLevel),
-        assignedUsers: []
+        assignedUsers: assignedUsers
         };
         try {
             validateGroupTask(taskData);
+            console.log("Form submitted successfully!");
+        } catch (error) {
+            event.preventDefault();
+            //check if error paragraph exists
+            let errorP = document.getElementById("error");
+            if (!errorP) {
+                errorP = document.createElement("p");
+                errorP.classList.add("error"); errorP.id = "error";
+                event.target.appendChild(errorP);
+            }
+            errorP.innerHTML = error.toString().replace("Error: ", "");
+        }
+    });
+}
+
+let addMemberForm = document.getElementById("addMember");
+if (addMemberForm) {
+    addMemberForm.addEventListener("submit", (event) => {
+        let userId = addMemberForm.elements["userId"].value;
+        try {
+            validateUserId(userId);
+            console.log("Form submitted successfully!");
+        } catch (error) {
+            event.preventDefault();
+            //check if error paragraph exists
+            let errorP = document.getElementById("error");
+            if (!errorP) {
+                errorP = document.createElement("p");
+                errorP.classList.add("error"); errorP.id = "error";
+                event.target.appendChild(errorP);
+            }
+            errorP.innerHTML = error.toString().replace("Error: ", "");
+        }
+    });
+}
+
+let addAdminForm = document.getElementById("addAdmin");
+if (addAdminForm) {
+    addAdminForm.addEventListener("submit", (event) => {
+        let userId = addAdminForm.elements["userId"].value;
+        try {
+            validateUserId(userId);
             console.log("Form submitted successfully!");
         } catch (error) {
             event.preventDefault();
