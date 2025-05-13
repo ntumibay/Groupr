@@ -340,12 +340,14 @@ router.route('/group/:PIN').get(async (req,res) => {
   let currUser = req.session.user;
   let PIN = parseInt(req.params.PIN, 10);
   let group = await groupFuncs.searchGroupById(PIN);
+  let groupSchedules = await groupFuncs.viewUserSchedules(PIN);
   let isAdmin = group.administrativeMembers.includes(currUser.userId);
 
   return res.status(200).render('group', {
     user: currUser,
     isAdmin,
     group,
+    groupSchedules,
     errors: false
   });
 })
