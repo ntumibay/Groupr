@@ -185,10 +185,10 @@ app.use('/user/:userid', (req, res, next) => {
 
 configRoutes(app);
 
-// app.listen(3000, () => {
-//     console.log("We've now got a server!");
-//     console.log('Your routes will be running on http://localhost:3000');
-// });
+app.listen(3000, () => {
+  console.log("We've now got a server!");
+  console.log('Your routes will be running on http://localhost:3000');
+});
 
 
 // below checks functions work b4 creating routes
@@ -445,7 +445,7 @@ configRoutes(app);
 //   console.log('Done!');
 // }
 
-
+/*
 async function main() {
   // await populate_database();
   await addTasks("warachnid", {
@@ -458,4 +458,4 @@ async function main() {
   });
 }
 
-await main();
+await main();*/

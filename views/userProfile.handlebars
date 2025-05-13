@@ -39,29 +39,57 @@ and their tasks/events alr set up
             {{/each}}
     </div>
     <div class="eventTaskForms">
-        {{#if errors}}
-            <p class="error">{{errorMessage}}</p>
-        {{/if}}
-        <form method="POST" action="/user/{{userId}}" id="userEventForm">
-            <h2>Add Event</h2>
+    {{#if errors}}
+        <p class="error">{{errorMessage}}</p>
+    {{/if}}
+
+    <form method="POST" action="/user/{{userId}}" id="userEventForm" class="event-form">
+        <h2>Add Event</h2>
+
+        <!-- Title -->
+        <div class="form-row">
             <label for="eventTitle">Event Title:</label>
             <input name="eventTitle" id="eventTitle" type="text" required>
-            <label for="eventStartDate">Start Date:</label>
-            <input name="startDate" id="eventStartDate" type="date" required>
-            <label for="eventEndDate">End Date:</label>
-            <input name="endDate" id="eventEndDate" type="date" required>
-            <label for="eventStartTime">Start Time:</label>
-            <input name="startTime" id="eventStartTime" type="time" required>
-            <label for="eventEndTime">End Time:</label>
-            <input name="endTime" id="eventEndTime" type="time" required>
+        </div>
+
+        <!-- Date row -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="eventStartDate">Start Date:</label>
+                <input name="startDate" id="eventStartDate" type="date" required>
+            </div>
+            <div class="form-group">
+                <label for="eventEndDate">End Date:</label>
+                <input name="endDate" id="eventEndDate" type="date" required>
+            </div>
+        </div>
+
+        <!-- Time row -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="eventStartTime">Start Time:</label>
+                <input name="startTime" id="eventStartTime" type="time" required>
+            </div>
+            <div class="form-group">
+                <label for="eventEndTime">End Time:</label>
+                <input name="endTime" id="eventEndTime" type="time" required>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-row">
             <label for="eventDescription">Event Description:</label>
             <textarea name="eventDescription" id="eventDescription"></textarea>
-            <button name="submitButton" id="submitButtonEvent" type="submit" value="event">Add Event</button>
-        </form>
-        <form method="POST" action="/user/{{userId}}" id="userTaskForm">
-            <h2>Add Task</h2>
-            <label for="taskDescription">Task Description:</label>
-            <textarea name="taskDescription" id="taskDescription"></textarea>
+        </div>
+
+        <button name="submitButton" id="submitButtonEvent" type="submit" value="event">Add Event</button>
+    </form>
+
+    <form method="POST" action="/user/{{userId}}" id="userTaskForm" class="task-form">
+        <h2>Add Task</h2>
+
+        <!-- Progress -->
+        <div class="form-row">
             <label for="progress">Progress:</label>
             <select name="progress" id="progress" required>
                 <option value="" disabled selected>Select Progress</option>
@@ -69,26 +97,54 @@ and their tasks/events alr set up
                 <option value="in progress">In Progress</option>
                 <option value="finished">Finished</option>
             </select>
-            <label for="taskStartDate">Start Date:</label>
-            <input name="startDate" id="taskStartDate" type="date" required>
-            <label for="taskEndDate">End Date:</label>
-            <input name="endDate" id="taskEndDate" type="date" required>
-            <label for="taskStartTime">Start Time:</label>
-            <input name="startTime" id="taskStartTime" type="time" required>
-            <label for="taskEndTime">End Time:</label>
-            <input name="endTime" id="taskEndTime" type="time" required>
+        </div>
+
+        <!-- Date row -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="taskStartDate">Start Date:</label>
+                <input name="startDate" id="taskStartDate" type="date" required>
+            </div>
+            <div class="form-group">
+                <label for="taskEndDate">End Date:</label>
+                <input name="endDate" id="taskEndDate" type="date" required>
+            </div>
+        </div>
+
+        <!-- Time row -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="taskStartTime">Start Time:</label>
+                <input name="startTime" id="taskStartTime" type="time" required>
+            </div>
+            <div class="form-group">
+                <label for="taskEndTime">End Time:</label>
+                <input name="endTime" id="taskEndTime" type="time" required>
+            </div>
+        </div>
+
+        <!-- Urgency -->
+        <div class="form-row">
             <label for="urgencyLevel">Urgency Level:</label>
             <select name="urgencyLevel" id="urgencyLevel">
                 <option value="1">1 (Low)</option>
-                <option value="2">2 </option>
-                <option value="3">3 (Medium) </option>
-                <option value="4">4 </option>
+                <option value="2">2</option>
+                <option value="3">3 (Medium)</option>
+                <option value="4">4</option>
                 <option value="5">5 (High)</option>
             </select>
-            <button name="submitButton" id="submitButtonTask" type="submit" value="task">Add Task</button>
-        </form>
+        </div>
 
-    </div>
+        <!-- Task Description -->
+        <div class="form-row">
+            <label for="taskDescription">Task Description:</label>
+            <textarea name="taskDescription" id="taskDescription"></textarea>
+        </div>
+
+        <button name="submitButton" id="submitButtonTask" type="submit" value="task">Add Task</button>
+    </form>
+</div>
+
     <div id="groupListing">
         <h2>Groups you're a part of:</h2>
         {{#each groups}}
