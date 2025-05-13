@@ -46,36 +46,37 @@ and their tasks/events alr set up
             <h2>Add Event</h2>
             <label for="eventTitle">Event Title:</label>
             <input name="eventTitle" id="eventTitle" type="text" required>
-            <label for="startDate">Start Date:</label>
-            <input name="startDate" id="startDate" type="date" required>
-            <label for="endDate">End Date:</label>
-            <input name="endDate" id="endDate" type="date" required>
-            <label for="startTime">Start Time:</label>
-            <input name="startTime" id="startTime" type="time" required>
-            <label for="endTime">End Time:</label>
-            <input name="endTime" id="endTime" type="time" required>
+            <label for="eventStartDate">Start Date:</label>
+            <input name="startDate" id="eventStartDate" type="date" required>
+            <label for="eventEndDate">End Date:</label>
+            <input name="endDate" id="eventEndDate" type="date" required>
+            <label for="eventStartTime">Start Time:</label>
+            <input name="startTime" id="eventStartTime" type="time" required>
+            <label for="eventEndTime">End Time:</label>
+            <input name="endTime" id="eventEndTime" type="time" required>
             <label for="eventDescription">Event Description:</label>
             <textarea name="eventDescription" id="eventDescription"></textarea>
-            <button name="submitButton" id="submitButton" type="submit" value="event">Add Event</button>
+            <button name="submitButton" id="submitButtonEvent" type="submit" value="event">Add Event</button>
         </form>
         <form method="POST" action="/user/{{userId}}" id="userTaskForm">
             <h2>Add Task</h2>
             <label for="taskDescription">Task Description:</label>
             <textarea name="taskDescription" id="taskDescription"></textarea>
             <label for="progress">Progress:</label>
-            <select name="progress" id="progress" type="text" required>
+            <select name="progress" id="progress" required>
+                <option value="" disabled selected>Select Progress</option>
                 <option value="not started">Not Started</option>
                 <option value="in progress">In Progress</option>
                 <option value="finished">Finished</option>
             </select>
-            <label for="startDate">Start Date:</label>
-            <input name="startDate" id="startDate" type="date" required>
-            <label for="endDate">End Date:</label>
-            <input name="endDate" id="endDate" type="date" required>
-            <label for="startTime">Start Time:</label>
-            <input name="startTime" id="startTime" type="time" required>
-            <label for="endTime">End Time:</label>
-            <input name="endTime" id="endTime" type="time" required>
+            <label for="taskStartDate">Start Date:</label>
+            <input name="startDate" id="taskStartDate" type="date" required>
+            <label for="taskEndDate">End Date:</label>
+            <input name="endDate" id="taskEndDate" type="date" required>
+            <label for="taskStartTime">Start Time:</label>
+            <input name="startTime" id="taskStartTime" type="time" required>
+            <label for="taskEndTime">End Time:</label>
+            <input name="endTime" id="taskEndTime" type="time" required>
             <label for="urgencyLevel">Urgency Level:</label>
             <select name="urgencyLevel" id="urgencyLevel">
                 <option value="1">1 (Low)</option>
@@ -84,14 +85,16 @@ and their tasks/events alr set up
                 <option value="4">4 </option>
                 <option value="5">5 (High)</option>
             </select>
-            <button name="submitButton" id="submitButton" type="submit" value="task">Add Task</button>
+            <button name="submitButton" id="submitButtonTask" type="submit" value="task">Add Task</button>
         </form>
 
     </div>
     <div id="groupListing">
         <h2>Groups you're a part of:</h2>
         {{#each groups}}
-            <li><a href="/group/{{@key}}">{{this}}</a></li>
+            <ul>
+                <li><a href="/group/{{@key}}">{{this}}</a></li>
+            </ul>
         {{/each}}
     </div>
     <div id="createGroup">
