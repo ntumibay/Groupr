@@ -143,12 +143,13 @@ const validateUserTask = (task) => {
   }
 
   const parseTime = (timeStr) => {
-  const [hours, minutes] = timeStr.split(':').map(Number);
-  if (isNaN(hours)) throw `Error: Invalid time format (use HH:MM)`;
-    return { hours, minutes };
+    const timePart = timeStr.split('T')[1]; // "00:00"
+    const [hours, minutes] = timePart.split(':').map(Number);
+    if (isNaN(hours)) throw `Error: Invalid time format (use HH:MM)`;
+      return { hours, minutes };
   };
-  const startTime = parseTime(task.startTime);
-  const endTime = parseTime(task.endTime);
+  const startTime = parseTime(task.startDate);
+  const endTime = parseTime(task.endDate);
 
   // Validate time logic for same-day tasks
   if (startDate.toDateString() == endDate.toDateString()) {
