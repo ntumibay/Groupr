@@ -257,7 +257,7 @@ export const addTasks = async (userId, task) => {
   const endTime = parseTime(task.endTime);
 
   // Validate time logic for same-day tasks
-  if (startDate.toDateString == endDate.toDateString) {
+  if (startDate.toDateString() == endDate.toDateString()) {
     if (startTime.hours > endTime.hours || 
         (startTime.hours === endTime.hours && startTime.minutes >= endTime.minutes)) {
       throw "Error: For same-day tasks, startTime must be before endTime";
@@ -315,7 +315,7 @@ export const addTasks = async (userId, task) => {
     assignedUsers: task.assignedUsers,
     progress: task.progress,
     startDate: startDate,
-    endDate: startDate,
+    endDate: endDate,
     startTime: task.startTime,
     endTime: task.endTime,
     urgencyLevel: task.urgencyLevel,

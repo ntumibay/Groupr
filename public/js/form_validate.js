@@ -151,7 +151,7 @@ const validateUserTask = (task) => {
   const endTime = parseTime(task.endTime);
 
   // Validate time logic for same-day tasks
-  if (startDate.toDateString == endDate.toDateString) {
+  if (startDate.toDateString() == endDate.toDateString()) {
     if (startTime.hours > endTime.hours || 
         (startTime.hours === endTime.hours && startTime.minutes >= endTime.minutes)) {
       throw "Error: For same-day tasks, startTime must be before endTime";
