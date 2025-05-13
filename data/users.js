@@ -168,9 +168,12 @@ export const addEvents = async (userId, event) => {
     endDate: endDate,
     description: event.description
   };
+
+  let totalEvents = user.schedules.events.concat(newEvent);
   await userCollection.updateOne(
     {_id: user._id},
-    {$push: {"schedules.events": newEvent}}
+    {$push: {"schedules.events": newEvent},
+     $set: {"schedules.userFreeTime": helpers.createFreeIntervals(totalEvents)}}
   );
 
   return newEvent;

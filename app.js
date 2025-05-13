@@ -424,11 +424,6 @@ async function populate_database() {
 
 async function main() {
   await populate_database();
-
-  // await addMember("warachnid", 123456);
-  // await addMember("derpysquid", 123456);
-  // const group = await searchGroupById(123456);
-  // console.log(group.schedule);
 }
 
 main();
