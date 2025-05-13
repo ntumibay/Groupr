@@ -257,7 +257,7 @@ export const addTasks = async (userId, task) => {
   const endTime = parseTime(task.endTime);
 
   // Validate time logic for same-day tasks
-  if (startDate.toDateString == endDate.toDateString) {
+  if (startDate.toDateString() == endDate.toDateString()) {
     if (startTime.hours > endTime.hours || 
         (startTime.hours === endTime.hours && startTime.minutes >= endTime.minutes)) {
       throw "Error: For same-day tasks, startTime must be before endTime";
@@ -315,7 +315,7 @@ export const addTasks = async (userId, task) => {
     assignedUsers: task.assignedUsers,
     progress: task.progress,
     startDate: startDate,
-    endDate: startDate,
+    endDate: endDate,
     startTime: task.startTime,
     endTime: task.endTime,
     urgencyLevel: task.urgencyLevel,
@@ -353,7 +353,7 @@ export const joinGroup = async (groupName, groupPIN, userId) =>{
   userId = helpers.validateUserId(userId);
   groupName = helpers.validateStringInput(groupName).toLowerCase();
   let group = await searchGroupById(groupPIN);
-  if (!group || groupName!==group.name){
+  if (!group || groupName!==group.name.toLowerCase()){
     throw "Error: Could not find group";
   }
 
