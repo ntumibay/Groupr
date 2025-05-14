@@ -46,7 +46,7 @@ and their tasks/events alr set up
 
         <!-- Wrap the two main forms in a flex container -->
         <div class="form-pair-container">
-            <form method="POST" action="/group/{{group.PIN}}" id="groupEventForm" class="event-form">
+            <form method="POST" action="/user/{{userId}}" id="userEventForm" class="event-form">
                 <h2>Add Event</h2>
 
                 <!-- Title (top line) -->
@@ -57,11 +57,11 @@ and their tasks/events alr set up
 
                 <!-- Date row -->
                 <div class="form-row">
-                    <div class="form-group">
+                    <div>
                         <label for="eventStartDate">Start Date:</label>
                         <input name="startDate" id="eventStartDate" type="date" required>
                     </div>
-                    <div class="form-group">
+                    <div>
                         <label for="eventEndDate">End Date:</label>
                         <input name="endDate" id="eventEndDate" type="date" required>
                     </div>
@@ -69,11 +69,11 @@ and their tasks/events alr set up
 
                 <!-- Time row -->
                 <div class="form-row">
-                    <div class="form-group">
+                    <div>
                         <label for="eventStartTime">Start Time:</label>
                         <input name="startTime" id="eventStartTime" type="time" required>
                     </div>
-                    <div class="form-group">
+                    <div>
                         <label for="eventEndTime">End Time:</label>
                         <input name="endTime" id="eventEndTime" type="time" required>
                     </div>
@@ -88,7 +88,7 @@ and their tasks/events alr set up
                 <button name="submitButton" id="submitButtonEvent" type="submit" value="event">Add Event</button>
             </form>
 
-            <form method="POST" action="/group/{{group.PIN}}" id="groupTaskForm" class="task-form">
+            <form method="POST" action="/user/{{userId}}" id="userTaskForm" class="task-form">
                 <h2>Add Task</h2>
 
                 <!-- Progress (own line in middle) -->
@@ -104,11 +104,11 @@ and their tasks/events alr set up
 
                 <!-- Date row -->
                 <div class="form-row">
-                    <div class="form-group">
+                    <div>
                         <label for="taskStartDate">Start Date:</label>
                         <input name="startDate" id="taskStartDate" type="date" required>
                     </div>
-                    <div class="form-group">
+                    <div>
                         <label for="taskEndDate">End Date:</label>
                         <input name="endDate" id="taskEndDate" type="date" required>
                     </div>
@@ -116,11 +116,11 @@ and their tasks/events alr set up
 
                 <!-- Time row -->
                 <div class="form-row">
-                    <div class="form-group">
+                    <div>
                         <label for="taskStartTime">Start Time:</label>
                         <input name="startTime" id="taskStartTime" type="time" required>
                     </div>
-                    <div class="form-group">
+                    <div>
                         <label for="taskEndTime">End Time:</label>
                         <input name="endTime" id="taskEndTime" type="time" required>
                     </div>
@@ -128,7 +128,7 @@ and their tasks/events alr set up
 
                 <!-- Urgency and Assignees -->
                 <div class="form-row">
-                    <div class="form-group">
+                    <div>
                         <label for="urgencyLevel">Urgency Level:</label>
                         <select name="urgencyLevel" id="urgencyLevel">
                             <option value="1">1 (Low)</option>
@@ -153,20 +153,6 @@ and their tasks/events alr set up
                 <button name="submitButton" type="submit" value="task">Add Task</button>
             </form>
         </div>
-
-        <form method="POST" action="/group/{{group.PIN}}" id="addMember">
-            <h2>Add Member</h2>
-            <label for="memberUserId">User ID:</label>
-            <input name="userId" id="memberUserId" type="text" required>
-            <button name="submitButton" id="submitButtonMember" type="submit" value="member">Add Member</button>
-        </form>
-
-        <form method="POST" action="/group/{{group.PIN}}" id="addAdmin">
-            <h2>Add Member to Administration</h2>
-            <label for="adminUserId">User ID:</label>
-            <input name="userId" id="adminUserId" type="text" required>
-            <button name="submitButton" id="submitButtonAdmin" type="submit" value="admin">Add Administrator</button>
-        </form>
     </div>
 
 
