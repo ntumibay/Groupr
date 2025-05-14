@@ -28,9 +28,11 @@
     <h2>Group Tasks:</h2>
         {{#each group.schedule.tasks}}
             <ul>
-                <li>Description: {{this.description}}</li>
+                <li>id: {{this._id}}</li>
+                <li>Progress: {{this.progress}}</li>
                 <li>Start Date: {{this.startDate}}</li>
                 <li>End Date: {{this.endDate}}</li>
+                <li>Urgency Level: {{this.urgencyLevel}}</li>
             </ul>
         {{/each}}
     <h2>Group Free Time</h2>
@@ -59,9 +61,11 @@
                     <h4>Tasks:</h4>
                     {{#each this.tasks}}
                         <ul>
-                            <li>Description: {{this.description}}</li>
+                            <li>id: {{this._id}}</li>
+                            <li>Progress: {{this.progress}}</li>
                             <li>Start Date: {{this.startDate}}</li>
                             <li>End Date: {{this.endDate}}</li>
+                            <li>Urgency Level: {{this.urgencyLevel}}</li>
                         </ul>
                     {{/each}}
 

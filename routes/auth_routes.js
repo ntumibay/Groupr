@@ -253,6 +253,7 @@ router
     let combinedEndDate = `${body.endDate}T${body.endTime}`;
     let pinToJoin = parseInt(body.pinToJoin,10);
     let groupNameToJoin = body.groupNameToJoin;
+    let pinToUpdate = parseInt(body.pinToUpdate,10);
     if (formType === 'event') {
       // handle event form submission
       //so call addEvent with userId and event data
@@ -317,6 +318,24 @@ router
         const updatedUser = await userFuncs.getUserById(req.session.user.userId);
         req.session.user = updatedUser;
     
+        return res.status(200).redirect(`/user/${req.session.user.userId}`);
+      } catch (e) {
+        return res.status(404).render('userProfile', {
+          userId: currUser.userId,
+          fullName: fullName,
+          events: currUser.schedules.events,
+          tasks: currUser.schedules.tasks,
+          errors: true,
+          errorMessage: e.toString(),
+          groups: currUser.groups
+        });
+      }
+    } else if (formType === "progress") {
+      try {
+        let progressDropdown = body.progressDropdown.replace(/\+/g, ' ');
+        await groupFuncs.updateProgress(body.taskIdInput.toString(), progressDropdown, req.session.user.userId);
+        let currUser = await userFuncs.getUserById(req.session.user.userId);
+        req.session.user = currUser;
         return res.status(200).redirect(`/user/${req.session.user.userId}`);
       } catch (e) {
         return res.status(404).render('userProfile', {

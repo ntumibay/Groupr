@@ -404,8 +404,7 @@ export const groupAddTasks = async (groupPIN, task) => {
   return newTask;
 }
 
-export const updateProgress = async (groupPIN, taskId, newProgress, userId) => {
-    groupPIN = helpers.validatePIN(groupPIN);
+export const updateProgress = async (taskId, newProgress, userId) => {
     taskId = taskId.toString().trim();
     newProgress = newProgress.trim().toLowerCase();
     //only these inputs are allowed
@@ -416,9 +415,9 @@ export const updateProgress = async (groupPIN, taskId, newProgress, userId) => {
     const groupCollection = await groups();
     const userCollection = await users();
 
-    //find group and task
-    const group = await groupCollection.findOne({ PIN: groupPIN });
-    if (!group) throw "Error: Group not found";
+    //find task
+    const group = await groupCollection.findOne({ "schedule.tasks._id": new ObjectId(taskId) });
+    if (!group) throw "Error: Group with the specified task not found";
 
     const task = group.schedule.tasks.find(t => t._id.toString() === taskId);
     if (!task) throw "Error: Task not found";
@@ -433,17 +432,13 @@ export const updateProgress = async (groupPIN, taskId, newProgress, userId) => {
     //update task progress in group
     const updateResult = await groupCollection.updateOne(
         { 
-            PIN: groupPIN,
+            PIN: group.PIN,
             "schedule.tasks._id": new ObjectId(taskId)
         },
         {
             $set: { "schedule.tasks.$.progress": newProgress }
         }
     );
-
-    if (updateResult.modifiedCount === 0) {
-        throw "Error: Failed to update task progress";
-    }
 
     //update task progress for assignedUsers
     const userUpdatePromises = task.assignedUsers.map(async assignedUserId => {
@@ -459,7 +454,7 @@ export const updateProgress = async (groupPIN, taskId, newProgress, userId) => {
     });
 
     //return updated task
-    const updatedGroup = await groupCollection.findOne({ PIN: groupPIN });
+    const updatedGroup = await groupCollection.findOne({ PIN: group.PIN });
     const updatedTask = updatedGroup.schedule.tasks.find(t => t._id.toString() === taskId);
     return updatedTask;
 };

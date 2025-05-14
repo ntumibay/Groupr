@@ -445,17 +445,10 @@ app.listen(3000, () => {
 //   console.log('Done!');
 // }
 
-/*
-async function main() {
-  // await populate_database();
-  await addTasks("warachnid", {
-    assignedUsers: [],
-    progress: "not started",
-    startDate: "2025-05-13T12:00",
-    endDate: "2025-05-14T00:00",
-    urgencyLevel: 5,
-    description: "fart"
-  });
-}
 
-await main();*/
+// async function main() {
+//   // await populate_database();
+//   await updateProgress("6822f32c190d8aefe425461f", "finished", "teriya");
+// }
+
+// await main();

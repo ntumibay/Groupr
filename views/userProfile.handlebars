@@ -38,6 +38,20 @@ and their tasks/events alr set up
                 </ul>
                 <p>Description: {{this.description}}</p>
             {{/each}}
+        <form method="POST" action="/user/{{userId}}" id="userTaskProgressForm">
+            <label for="progressDropdown">Progress: </label>
+            <select name="progressDropdown", id="progressDropdown">
+                <option value="" disabled selected>Select Progress</option>
+                <option value="not started">Not Started</option>
+                <option value="in progress">In Progress</option>
+                <option value="finished">Finished</option>
+            </select>
+
+            <label for="taskIdInput">Task ID: </label>
+            <input name="taskIdInput" id="taskIdInput">
+
+            <button name="submitButton" id="submitButtonEvent" type="submit" value="progress">Update Task</button>
+        </form>
     </div>
     <div class="eventTaskForms">
         {{#if errors}}
