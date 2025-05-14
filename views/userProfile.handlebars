@@ -30,6 +30,7 @@ and their tasks/events alr set up
             {{#each tasks}}
                 <h3>Task {{inc @index}}</h3>
                 <ul>
+                    <li>id: {{this._id}}</li>
                     <li>Progress: {{this.progress}}</li>
                     <li>Start Date: {{this.startDate}}</li>
                     <li>End Date: {{this.endDate}}</li>
