@@ -1,21 +1,13 @@
 <main>
-    <h1 id="appTitle">Groupr</h1>
-    <p id="siteDescription">This is the home page.</p>
+    <div class="home-container">
+        <h1>Welcome to</h1>
+        <img src="/title.png" alt="GROUPr Logo" id="appTitleLogo">
+        {{!--<p id="siteDescription">This is the home page.</p>--}}
 
-    {{#if user}}
-        {{#if (eq user.role 'administrator')}}
-            <a id="userlink" href="/user/{{user.userId}}">User Page</a>
-            <a id="superuserlink" href="/superuser">Super User Page</a>
+        {{#if user}}
+            <button id="home-start-button" onclick="location.href='/user/{{user.userId}}'">Start Scheduling!</button>
         {{else}}
-            <a id="userlink" href="/user">User Page</a>
+            <button id="home-start-button" onclick="location.href='/login'">Start Scheduling!</button>
         {{/if}}
-    {{else}}
-        <div id="signuplinkdiv">
-            <a id="signuplink" href="/registerUser">Register User Here</a>
-        </div>
-        <div id="loginlinkdiv">
-            <a id="loginlink" href="/login">Login Here</a>
-        </div>
-    {{/if}}
-
+    </div>
 </main>
