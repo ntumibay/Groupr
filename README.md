@@ -12,6 +12,8 @@ The web application will serve as a scheduler for groups. Users will be able to 
 
 Our goal with this project is to make group planning simple, accessible, and efficient. 
 
+![](images/Screenshot%202025-08-18%20095722.png)
+
 # Core Features:
 Users will be able to upload their own schedules (time, date, descriptions), to be available for display to the other members in their group.
 Users (who are assigned permission) can assign tasks to be completed by assigned members.
